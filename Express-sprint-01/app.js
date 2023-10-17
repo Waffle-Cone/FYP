@@ -10,16 +10,20 @@ const app = new Express();
 
 //Controllers -------------------------------------------------------------
 const boatController = async (req, res) => {
-    // Build SQL
 
+    const status = req.params.status; // when is Undefined it will be /api/boats 
+
+    // Build SQL
     const table = 'boats';
     const extendedTable = `${table} LEFT JOIN models ON boats.Model_ID = models.Model_ID
     LEFT JOIN manufacturers ON models.Manufacturer_ID = manufacturers.Manufacturer_ID
-    LEFT JOIN watercrafttypes ON models.Type_ID = watercrafttypes.Type_ID`;
+    LEFT JOIN watercrafttypes ON models.Type_ID = watercrafttypes.Type_ID `;
 
     const extendedField = ['boats.Registration_Number, models.Model_Name, manufacturers.Manufacturer_Name, models.Img_URL, watercrafttypes.Type, boats.Status'];
 
-    const sql = `SELECT ${extendedField} FROM ${extendedTable}`;
+    let sql = `SELECT ${extendedField} FROM ${extendedTable}`;
+    if(status) {sql += `WHERE boats.Status = "${status}"`} // when status is set we use where clause
+    console.log(sql);
  
     // EXECUTE SQL
     let isSuccess = false;
@@ -45,7 +49,8 @@ const boatController = async (req, res) => {
   
 };
 // Endpoints --------------------------------------------------------------
-app.get('/api/boats', boatController);
+app.get('/api/boats', boatController); // for all boats
+app.get('/api/boats/:status', boatController); // for boats with specific status
 
 // Start server -----------------------------------------------------------
 
