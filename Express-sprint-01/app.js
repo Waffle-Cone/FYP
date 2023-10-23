@@ -1,10 +1,13 @@
 // Imports ----------------------------------------------------------------
 import Express from "express";
+//import Cors from "cors"
 import database from "./database.js";
+import cors from "cors";  // this is to fix the issue with not being able to fecth from another domain. FINALLy !!!!!!!!!!!!!!
 
 
 // Configure express app --------------------------------------------------
 const app = new Express();
+app.use(cors());
 
 // Configure middleware ---------------------------------------------------
 
