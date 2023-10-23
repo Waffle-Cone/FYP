@@ -1,3 +1,4 @@
+import { Card } from "../UI/Card";
 import "./WatercraftCard.scss"
 
 function WatercraftCard ({watercraft}){
@@ -5,14 +6,17 @@ function WatercraftCard ({watercraft}){
     // State ---------------------------------------------------------------
     // View ----------------------------------------------------------------
     return (
-        <div className="WatercraftCard" >
-                <img src={watercraft.Img_URL} />
-                <p>{watercraft.Registration_Number}</p>
-                <p>{watercraft.Model_Name}</p>
-                <p>{watercraft.Type}</p>
-                <p>{watercraft.Status}</p>
-                
-        </div>  
+        
+            <div className="watercraftCard" >
+                <Card> 
+                    <img src={watercraft.Img_URL} />
+                    <p>{watercraft.Registration_Number}</p>
+                    <p>{watercraft.Model_Name}</p>
+                    <p>{watercraft.Type}</p>
+                    <p>{watercraft.Status}</p>   
+                </Card>     
+            </div>
+        
 
     );
 }

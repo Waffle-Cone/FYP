@@ -1,30 +1,26 @@
 import { useState, useEffect } from 'react';
+import API from '../API/API.jsx';
 import WatercraftCard from '../Entity/WatercraftCard.jsx';
+import { CardContainer } from '../UI/Card.jsx';
 
 function WaterCraft(){
    
     //Initialisation ------------------------------------------------------
-
-    const apiURL =  `http://localhost:5000/api`;
-    const endpoint = `/boats`;
-    const apiEndpoint = `${apiURL}${endpoint}`;
-    console.log(apiEndpoint);
-
+    const endPoint = `/boats`;
 
     //state  --------------------------------------------------------------
     const [watercrafts, setWatercrafts] = useState(null);
     const[loadingMessage, setLoadingMessage] = useState("Loading records...");
 
-    const apiGet = async(apiEndpoint) => {
-        const response = await fetch(apiEndpoint);
-        const result = await response.json();
-        setWatercrafts(result);
+    const apiGet = async(endPoint) => {
+        const response = await API.get(endPoint);
+        response.isSuccess
+        ? setWatercrafts(response.result)
+        : setLoadingMessage(response.message)
     };
 
-    useEffect(() => {apiGet(apiEndpoint)},[apiEndpoint]);
-    console.log(watercrafts);
-
-
+    useEffect(() => {apiGet(endPoint)},[endPoint]);
+ 
     //Handlers ------------------------------------------------------------
     //View ----------------------------------------------------------------
 
@@ -35,8 +31,13 @@ function WaterCraft(){
             ?<p>{loadingMessage}</p>
             :watercrafts.length === 0
                 ?<p> Add your first watercraft </p>
-                : watercrafts.map((watercraft) => <WatercraftCard watercraft={watercraft} key={watercraft.Registration_Number}/> )
-        }
+                : (
+                    <>
+                        <CardContainer>
+                            {watercrafts.map((watercraft) => <WatercraftCard watercraft={watercraft} key={watercraft.Registration_Number}/> )}
+                        </CardContainer>
+                    </>
+                )}
         </>
     );
 };
