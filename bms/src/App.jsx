@@ -6,7 +6,7 @@ import PageNotFound from './components/view/PageNotFound.jsx';
 import WaterCraft from './components/view/Watercraft.jsx';
 
 function App() {
-  const loggedInUser = "";
+  const loggedInUser = "Admin";
 
   return (
     <BrowserRouter>

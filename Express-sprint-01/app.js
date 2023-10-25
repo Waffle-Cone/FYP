@@ -26,7 +26,7 @@ const boatController = async (req, res) => {
 
     let sql = `SELECT ${extendedField} FROM ${extendedTable}`;
     if(status) {sql += `WHERE boats.Status = "${status}"`} // when status is set we use where clause
-    console.log(sql);
+    //console.log(sql);
  
     // EXECUTE SQL
     let isSuccess = false;
