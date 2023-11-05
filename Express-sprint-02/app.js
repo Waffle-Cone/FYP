@@ -2,16 +2,20 @@
 import Express from "express";
 //import Cors from "cors"
 import database from "./database.js";
+import { check, validationResult } from "express-validator";
 import cors from "cors";  // this is to fix the issue with not being able to fecth from another domain. FINALLy !!!!!!!!!!!!!!
 
 
+
 // Configure express app --------------------------------------------------
-const app = new Express();
-app.use(cors());
+const app = new Express(); 
 
 // Configure middleware ---------------------------------------------------
+app.use(cors());
+app.use(Express.urlencoded({extended: false})); //this specifies the incoming request object as a string
+app.use(Express.json()); //this specifies the incoming request object as a JSON string
 
-//Controllers -------------------------------------------------------------
+// GET Controllers -------------------------------------------------------------
 const boatController = async (req, res) => {
 
     const status = req.params.status; // when is Undefined it will be /api/boats 
@@ -49,7 +53,7 @@ const boatController = async (req, res) => {
     isSuccess 
     ? res.status(200).json(result) // set status to 200 then return result as json
     : res.status(400).json({message});// something went wrong and set status to 400 and return message as json 
-    console.log(res);
+    //console.log(res);
 };
 
 // model controller
@@ -58,9 +62,9 @@ const modelController = async (req,res) => {
     // Build SQL
         // get all model name
     const table = 'models';
-    const extendedTable = `${table} LEFT JOIN watercrafttypes ON models.Type_ID = watercrafttypes.Type_ID`;
+    const extendedTable = `${table}`;
 
-    const extendedField = ['models.Model_Name, watercrafttypes.Type'];
+    const extendedField = ['models.Model_ID,models.Model_Name'];
 
     let sql = `SELECT ${extendedField} FROM ${extendedTable}`;
     console.log(sql);
@@ -87,6 +91,83 @@ const modelController = async (req,res) => {
     ? res.status(200).json(result) // set status to 200 then return result as json
     : res.status(400).json({message});// something went wrong and set status to 400 and return message as json 
 };
+//post sql
+const buildWatercraftInsertSQL = (record) => {
+    const table = 'Boats'
+    const mutableFields = ['Registration_Number','Model_ID','Status']
+    return `INSERT INTO  ${table} SET
+            Registration_Number=:Registration_Number,
+            Model_ID=:Model_ID,
+            Status=:Status`;
+
+};
+
+const buildWatercraftSelectSQL = (id) => {
+    const table = 'Boats'
+    let sql = `SELECT * FROM ${table}
+            WHERE Registration_Number= ${id}`;
+    return sql;
+};
+// CREATE, READ
+const createWatercraft = async (sql,record) => {
+    try {
+
+        const status = await database.query(sql,record);
+
+        const recoverRecordSql = buildWatercraftSelectSQL(status[0].insertId)
+
+        const {isSuccess, result, message} = await read(recoverRecordSql);
+
+        return isSuccess
+        ? { isSuccess:true, result: result, message:"Record found"}
+        : { isSuccess:false, result:null,message:`Failed to recover the inserted record: ${message}`};
+
+    }
+    catch(e) {
+       return{isSuccess:false, result: null, message: `Failed to execute query: ${e.message}`};
+    };
+};
+
+const read = async (sql) => {
+    let isSuccess = false;
+    let message = "";
+    let result = null;
+
+    try {
+        [result] = await database.query(sql);
+        return(result.length === 0) 
+       ? { isSuccess:false, result:null,message:"No record(s) found"}
+        :{ isSuccess:true, result: result, message:"Record(s) found"};
+    }
+    catch(e) {
+       return{isSuccess:false, result: null, message: `Failed to execute query: ${e.message}`};
+    };
+
+};
+
+
+//POST Controllers
+
+const addBoatController = async (req, res) => {
+    const errors = validationResult(req);
+
+   if(!errors.isEmpty()){
+        console.log(errors)
+    }
+    else{
+    console.log(req.body);
+    //const {Img_URL,Registration_Number,Model_ID,Status}= req.body; // get the values i need insert from the body 
+    //console.log(`Image: ${Img_URL}, Registration: ${Registration_Number}, Model_ID: ${Model_ID}, Status: ${Status}`);
+    
+    //access data
+    const sql = buildWatercraftInsertSQL(req.body);
+    const {isSuccess, result, message: accessorMessage} = await createWatercraft(sql,req.body);
+    if(!isSuccess) return res.status(404).json({message: accessorMessage});
+    
+    //response to request
+    res.status(201).send('Created watercraft') //the request has succeeded and has led to the creation of a resource
+    }
+};
 
 
 
@@ -94,6 +175,12 @@ const modelController = async (req,res) => {
 app.get('/api/boats', boatController); // for all boats
 app.get('/api/boats/:status', boatController); // for boats with specific status
 app.get('/api/model', modelController); // get model name
+
+app.post('/api/boats', [check('Img_URL').isURL(),
+                        check('Registration_Number').isInt(),
+                        check('Model_ID').isInt(), //not the name because i need the model number in the databse
+                        check('Status').isIn(['Available','Out of Water','Maintenance','Booked'])
+                        ],addBoatController);
 
 // Start server -----------------------------------------------------------
 

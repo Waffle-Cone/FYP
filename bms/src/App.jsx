@@ -4,6 +4,7 @@ import Home from './components/view/Home.jsx';
 import Login from './components/view/Login.jsx';
 import PageNotFound from './components/view/PageNotFound.jsx';
 import WaterCraft from './components/view/Watercraft.jsx';
+import WatercraftForm from './components/entity/watercraft/WatercraftForm.jsx';
 
 function App() {
   const loggedInUser = "Admin";
@@ -12,9 +13,9 @@ function App() {
     <BrowserRouter>
       <Layout loggedInUser={loggedInUser}>
         <Routes>
-          <Route path="/Home" element= {<Home/>}/>
+          <Route path="/" element= {<Home/>}/>
           <Route path="/login" element= {<Login/>}/>  
-          <Route path="/" element= {<WaterCraft/>}/>
+          <Route path="/watercraft" element= {<WaterCraft/>}/>
           <Route path="/*"element={<PageNotFound />}/>
         </Routes>    
       </Layout>

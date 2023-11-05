@@ -7,6 +7,9 @@ function Navbar(options) {
           <div className="navItem">
             <NavLink to = "/Home"> Home</NavLink>
           </div>
+          <div className="navItem">
+            <NavLink to = "/watercraft"> Watercraft </NavLink>
+          </div>
 
           <div className="navItem">
             <NavLink to = "/Staff"> Staff </NavLink>
