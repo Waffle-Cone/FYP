@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import API from '../API/API.jsx';
-import WatercraftCard from '../Entity/WatercraftCard.jsx';
+import WatercraftCard from '../Entity/watercraft/WatercraftCard.jsx';
 import { CardContainer } from '../UI/Card.jsx';
 
 function WaterCraft(){

@@ -1,4 +1,5 @@
-import { Card } from "../UI/Card";
+import PropTypes from 'prop-types';
+import { Card } from "../../UI/Card";
 import "./WatercraftCard.scss"
 
 function WatercraftCard ({watercraft}){
@@ -16,9 +17,18 @@ function WatercraftCard ({watercraft}){
                     <p>{watercraft.Status}</p>   
                 </Card>     
             </div>
-        
-
     );
 }
+
+WatercraftCard.propTypes = {
+    watercraft: PropTypes.shape({
+        Img_URL: PropTypes.string,
+        Registration_Number: PropTypes.number.isRequired,
+        Model_Name: PropTypes.string.isRequired,
+        Type: PropTypes.string.isRequired,
+        Status: PropTypes.string.isRequired,
+
+    })
+};
 
 export default  WatercraftCard;
