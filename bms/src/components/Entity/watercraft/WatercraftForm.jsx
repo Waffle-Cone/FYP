@@ -17,6 +17,7 @@ function WatercraftForm(options) {
             Img_URL: (value) => (value=== ''? null: value),
             Registration_Number: (value) => (value=== ''? null: parseInt(value)),
             Model_ID: (value) => parseInt(value),
+            Boat_Img: (value) => (value=== ''? null: value),
             Status: (value) => value
 
         },
@@ -25,6 +26,7 @@ function WatercraftForm(options) {
             Img_URL: (value) => (value=== null? '': value),
             Registration_Number: (value) => (value=== null? '': value),
             Model_ID: (value) => (value=== null? '': value),
+            Boat_Img: (value) => (value=== null? null: value),
             Status: (value) => value
         },
     }

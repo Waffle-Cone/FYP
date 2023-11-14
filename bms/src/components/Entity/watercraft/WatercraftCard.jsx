@@ -10,7 +10,11 @@ function WatercraftCard ({watercraft}){
         
             <div className="watercraftCard" >
                 <Card> 
-                    <img src={watercraft.Img_URL} />
+                    {
+                        !watercraft.Boat_Img  // If a custom boat image is specified use it. I f not use the default model one
+                        ?<img src={watercraft.Img_URL}/>
+                        :<img src={watercraft.Boat_Img}/>
+                    }
                     <p>{watercraft.Registration_Number}</p>
                     <p>{watercraft.Model_Name}</p>
                     <p>{watercraft.Type}</p>
@@ -23,6 +27,7 @@ function WatercraftCard ({watercraft}){
 WatercraftCard.propTypes = {
     watercraft: PropTypes.shape({
         Img_URL: PropTypes.string,
+        Boat_Img: PropTypes.string,
         Registration_Number: PropTypes.number.isRequired,
         Model_Name: PropTypes.string.isRequired,
         Type: PropTypes.string.isRequired,
