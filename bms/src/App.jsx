@@ -16,6 +16,7 @@ function App() {
           <Route path="/" element= {<Home/>}/>
           <Route path="/login" element= {<Login/>}/>  
           <Route path="/watercraft" element= {<WaterCraft/>}/>
+          <Route path="/addWatercraft" element= {<WatercraftForm/>}/>
           <Route path="/*"element={<PageNotFound />}/>
         </Routes>    
       </Layout>

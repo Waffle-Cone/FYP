@@ -1,47 +1,181 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Button } from "react";
 import API from "../../API/API";
 import './WatercraftForm.scss';
+import { useNavigate } from "react-router-dom";
+import isURL from 'is-url';
+import useLoad from "../../API/useLoad.jsx";
+
 
 const initialWatercraft = 
 {
-    Img_URL: 'https://idea7.co.uk/wp-content/uploads/2021/02/placeholder-250x250-1.png',
-    Registration_Number: null,
-    Model_ID: null,
-    Status: null
+    Boat_Img: null,
+    Registration: null,
+    Model_ID: 0,
+    Status: ''
 };
 
-function WatercraftForm(options) {
+function WatercraftForm({onSuccess}) {
     // Initialisation ------------------------------
+    const navigate = useNavigate(); //used to navigate to diffent pages
+
+
     const conformance ={
         html2js:{
-            Img_URL: (value) => (value=== ''? null: value),
-            Registration_Number: (value) => (value=== ''? null: parseInt(value)),
-            Model_ID: (value) => parseInt(value),
             Boat_Img: (value) => (value=== ''? null: value),
-            Status: (value) => value
+            Registration: (value) => (value=== ''? null: value),
+            Model_ID: (value) => (value == 0 ? null : parseInt(value)),
+            Status: (value) => (value ===''? null: value)
 
         },
 
         js2html:{
-            Img_URL: (value) => (value=== null? '': value),
-            Registration_Number: (value) => (value=== null? '': value),
-            Model_ID: (value) => (value=== null? '': value),
-            Boat_Img: (value) => (value=== null? null: value),
+            Boat_Img: (value) => (value=== null? '': value),
+            Registration: (value) => (value=== null? '': value),
+            Model_ID: (value) => (value === null ? 0 : value),
             Status: (value) => value
         },
     }
+
+    const isValid ={
+        Boat_Img: (value) => (value===null?true:isURL(value)),
+        Registration: (value) => {if (value!==null){return value.length >0 && value.length <100 }else {return false}},
+        Model_ID: (value) => (value!=0 || value!='0'),
+        Status: (value) => (value!='')
+    }
+
+    const errorMessage ={
+        Boat_Img: "Invalid URL",
+        Registration: "Invalid Registration Number",
+        Model_ID: "No model selected",
+        Status: "No Status selected"
+    }
+
+
+    const modelsEndpoint = '/model';
+    const postWatercraftEndpoint = '/boats';
+
     
-    //State ---------------------------------------
+        //State ---------------------------------------
     const [watercraft, setWatercraft] = useState(initialWatercraft);
+    const [modelList, setModelList] = useState([]);
+    const [loadingModelsMessage, setLoadingModelsMessage] = useState('loading...');
+    const[ errors, setErrors] = useState (Object.keys(initialWatercraft).reduce((acc, key) =>({...acc,[key]: null}), {}));
+    
+
+    // load in models
+    const apiGet = async(endPoint) => {
+        const response = await API.get(endPoint);
+        response.isSuccess
+        ? setModelList(response.result)
+        : setLoadingModelsMessage(response.message)
+    };
+
+    useEffect(() => {apiGet(modelsEndpoint)},[modelsEndpoint]);
+    //console.log(modelList);
 
     //Handlers -------------------------------------
-    const handleSubmit = async () => {
-        console.log(`watercraft=[${JSON.stringify(watercraft)}]`);
-        const result = await API.post()
-
-
+    const handleCancel = () => {
+        navigate('/watercraft');
     };
+
+    const handleChange = (event) => {
+        const {name, value} = event.target;
+        const conformedValue = conformance.html2js[name](value);
+        setWatercraft({...watercraft, [name]: conformedValue});
+        setErrors({...errors,[name]: isValid[name](conformedValue) ? null: errorMessage[name]});
+    };
+
+    useEffect(() => {setErrors(errors)},[errors]); // I NEED THIS == without it all the error message are one step behind 
+
+    const isValidWatercraft =(watercraft) => {
+        var isWatercraftValid = true;
+        Object.keys(watercraft).forEach((key) => { // we do this becasue setErrors is asychronous thus we cannot determine its stte when we need to go through it
+            if(isValid[key](watercraft[key])){
+                errors[key] = null;
+            }else {
+                errors[key] = errorMessage[key]
+                isWatercraftValid = false;
+            }
+        });
+        return isWatercraftValid;
+    }
+
+    const handleSubmit = async () => {
+        //console.log(`watercraft=[${JSON.stringify(watercraft)}]`);
+        const check = isValidWatercraft(watercraft);
+        setErrors({...errors});
+        if(check)
+        {
+            const result = await API.post(postWatercraftEndpoint, watercraft);
+            console.log(result);
+            if(result.isSuccess) 
+            {
+                alert("Insert success")
+                navigate('/watercraft');
+
+            }
+            else{
+                
+                alert(`Insert NOT Successful: ${result.message}`);
+            }
+        }
+    };
+
+
     //View -----------------------------------------
+    return (
+        <>
+            <h1 id="title">Add a Watercraft to your fleet</h1>
+            <div className="watercraftForm">
+                    <div className="formTray">
+                        <label htmlFor="Registration"> Registration
+                            <input 
+                            type="text" 
+                            name="Registration" 
+                            value= {conformance.js2html["Registration"](watercraft.Registration)}
+                            onChange={handleChange}
+                            />
+                            <span className="error">{errors.Registration}</span>
+                        </label>
+
+                        <label htmlFor="Model_ID"> Model
+                            <select name="Model_ID" value={conformance.js2html["Model_ID"](watercraft.Model_ID)} onChange={handleChange}>
+                            <option selected='true' value='0' disabled>None Selected</option>
+                              {
+                                modelList.sort((a, b) => a.Model_Name.localeCompare(b.Model_Name))   ///sort by Model_Name
+                                .map((model) => <option key={model.Model_ID} value={model.Model_ID}>{model.Model_Name}</option>)
+                              }
+                            </select>
+                            <span className="error">{errors.Model_ID}</span>
+                        </label>
+
+                        <label htmlFor="Status"> Status
+                            <select name="Status" value={conformance.js2html["Status"](watercraft.Status)} onChange={handleChange}> 
+                                <option selected='true' value='' disabled>None Selected</option> 
+                                {
+                                    ['Available', 'Booked', 'Maintenance', 'Out of Water'].map((status) => <option key={status} value={status}>{status}</option>)
+                                }     
+                            </select>
+                            <span className="error">{errors.Status}</span>
+                        </label>
+
+                        <label htmlFor="Boat_Img"> Image URL
+                            <input 
+                            type="text" 
+                            name="Boat_Img" value={conformance.js2html["Boat_Img"](watercraft.Boat_Img)} 
+                            onChange={handleChange}
+                            />
+                            <span className="error">{errors.Boat_Img}</span>
+                        </label>
+                    </div>
+
+                    <div className="buttonTray">    
+                        <button onClick={handleCancel}>Cancel</button> 
+                        <button onClick={handleSubmit}>Submit</button>
+                    </div>
+            </div>
+       </>
+    );
     
 
 }

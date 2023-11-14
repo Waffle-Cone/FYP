@@ -18,17 +18,20 @@ const callFetch = async (endpoint, method, record) => {
     };
     //call the fetch and process return 
     try{
-        let result = null;
+        var result = null;
         const endpointAddress = API_URL + endpoint;
         const response = await fetch(endpointAddress, requestObj);
-        if(response.status != 204) result = await response.json();
-        return response.status >= 200 && response.status < 300
-            ? { isSuccess: true, result}
-            : { isSuccess: false, message: result.message };
+        result = await response.json();
+        if(response.status != 204){
+           return response.status >= 200 && response.status < 300
+            ?{ isSuccess: true, result}
+            :{ isSuccess: false, response ,message: result.message }
+        } 
         }
         catch(error){
             return {isSuccess: false, message: error.message }
         }
+       ;
 
 };
 

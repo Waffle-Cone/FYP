@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import API from '../API/API.jsx';
 import WatercraftCard from '../Entity/watercraft/WatercraftCard.jsx';
 import { CardContainer } from '../UI/Card.jsx';
+import { useNavigate } from 'react-router-dom';
 
 function WaterCraft(){
    
     //Initialisation ------------------------------------------------------
+    const navigate = useNavigate();
     const endPoint = `/boats`;
 
     //state  --------------------------------------------------------------
@@ -22,10 +24,19 @@ function WaterCraft(){
     useEffect(() => {apiGet(endPoint)},[endPoint]);
  
     //Handlers ------------------------------------------------------------
+    const showForm = () => {
+        navigate('/addWatercraft');
+    };
+    const handleCancel = () => navigate('/watercraft');
+    const handleSuccess = async() => {
+        
+    }
+
     //View ----------------------------------------------------------------
 
     return(
         <>
+        <button onClick={showForm} onSuccess={handleSuccess}>Add Watercraft</button>
         {
             !watercrafts
             ?<p>{loadingMessage}</p>

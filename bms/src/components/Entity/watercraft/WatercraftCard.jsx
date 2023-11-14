@@ -15,7 +15,7 @@ function WatercraftCard ({watercraft}){
                         ?<img src={watercraft.Img_URL}/>
                         :<img src={watercraft.Boat_Img}/>
                     }
-                    <p>{watercraft.Registration_Number}</p>
+                    <p>{watercraft.Registration}</p>
                     <p>{watercraft.Model_Name}</p>
                     <p>{watercraft.Type}</p>
                     <p>{watercraft.Status}</p>   
@@ -28,7 +28,7 @@ WatercraftCard.propTypes = {
     watercraft: PropTypes.shape({
         Img_URL: PropTypes.string,
         Boat_Img: PropTypes.string,
-        Registration_Number: PropTypes.number.isRequired,
+        Registration: PropTypes.string.isRequired,
         Model_Name: PropTypes.string.isRequired,
         Type: PropTypes.string.isRequired,
         Status: PropTypes.string.isRequired,

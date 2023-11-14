@@ -27,7 +27,7 @@ const boatController = async (req, res) => {
     LEFT JOIN manufacturers ON models.Manufacturer_ID = manufacturers.Manufacturer_ID
     LEFT JOIN watercrafttypes ON models.Type_ID = watercrafttypes.Type_ID `;
 
-    const extendedField = ['boats.Registration_Number, boats.Boat_Img, models.Model_Name, manufacturers.Manufacturer_Name, models.Img_URL, watercrafttypes.Type, boats.Status'];
+    const extendedField = ['boats.Registration, boats.Boat_Img, models.Model_Name, manufacturers.Manufacturer_Name, models.Img_URL, watercrafttypes.Type, boats.Status'];
 
     let sql = `SELECT ${extendedField} FROM ${extendedTable}`;
     if(status) {sql += `WHERE boats.Status = "${status}"`} // when status is set we use where clause
@@ -54,6 +54,7 @@ const boatController = async (req, res) => {
     ? res.status(200).json(result) // set status to 200 then return result as json
     : res.status(400).json({message});// something went wrong and set status to 400 and return message as json 
     //console.log(res);
+    console.log("Fetched watercraft");
 };
 
 // model controller
@@ -67,7 +68,7 @@ const modelController = async (req,res) => {
     const extendedField = ['models.Model_ID,models.Model_Name'];
 
     let sql = `SELECT ${extendedField} FROM ${extendedTable}`;
-    console.log(sql);
+    console.log("Fetched models");
  
     // EXECUTE SQL
     let isSuccess = false;
@@ -94,9 +95,10 @@ const modelController = async (req,res) => {
 //post sql
 const buildWatercraftInsertSQL = (record) => {
     const table = 'Boats'
-    const mutableFields = ['Registration_Number','Model_ID','Status']
+    const mutableFields = ['Boat_Img','Registration','Model_ID','Status']
     return `INSERT INTO  ${table} SET
-            Registration_Number=:Registration_Number,
+            Boat_Img=:Boat_Img,
+            Registration=:Registration,
             Model_ID=:Model_ID,
             Status=:Status`;
 
@@ -105,7 +107,7 @@ const buildWatercraftInsertSQL = (record) => {
 const buildWatercraftSelectSQL = (id) => {
     const table = 'Boats'
     let sql = `SELECT * FROM ${table}
-            WHERE Registration_Number= ${id}`;
+            WHERE Registration= ${id}`;
     return sql;
 };
 // CREATE, READ
@@ -162,10 +164,9 @@ const addBoatController = async (req, res) => {
     //access data
     const sql = buildWatercraftInsertSQL(req.body);
     const {isSuccess, result, message: accessorMessage} = await createWatercraft(sql,req.body);
-    if(!isSuccess) return res.status(404).json({message: accessorMessage});
-    
-    //response to request
-    res.status(201).send('Created watercraft') //the request has succeeded and has led to the creation of a resource
+    !isSuccess
+    ?res.status(404).json({message: accessorMessage})
+    :res.status(201).json(result) //the request has succeeded and has led to the creation of a resource <------- THIS CODE COSTED ME HOURSE OF Debugging
     }
 };
 
@@ -176,8 +177,8 @@ app.get('/api/boats', boatController); // for all boats
 app.get('/api/boats/:status', boatController); // for boats with specific status
 app.get('/api/model', modelController); // get model name
 
-app.post('/api/boats', [check('Img_URL').isURL(),
-                        check('Registration_Number').isInt(),
+app.post('/api/boats', [check('Boat_Img').isURL().optional({nullable: true}), // is a url or is null
+                        check('Registration').isString(),
                         check('Model_ID').isInt(), //not the name because i need the model number in the databse
                         check('Status').isIn(['Available','Out of Water','Maintenance','Booked'])
                         ],addBoatController);
