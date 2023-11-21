@@ -11,7 +11,7 @@ const initialWatercraft =
     Boat_Img: null,
     Registration: null,
     Model_ID: 0,
-    Status: ''
+    Status_ID: 0
 };
 
 function WatercraftForm({onSuccess}) {
@@ -24,7 +24,7 @@ function WatercraftForm({onSuccess}) {
             Boat_Img: (value) => (value=== ''? null: value),
             Registration: (value) => (value=== ''? null: value),
             Model_ID: (value) => (value == 0 ? null : parseInt(value)),
-            Status: (value) => (value ===''? null: value)
+            Status_ID: (value) => (value == 0 ? null : parseInt(value))
 
         },
 
@@ -32,7 +32,7 @@ function WatercraftForm({onSuccess}) {
             Boat_Img: (value) => (value=== null? '': value),
             Registration: (value) => (value=== null? '': value),
             Model_ID: (value) => (value === null ? 0 : value),
-            Status: (value) => value
+            Status_ID: (value) => (value === null ? 0 : value)
         },
     }
 
@@ -40,38 +40,51 @@ function WatercraftForm({onSuccess}) {
         Boat_Img: (value) => (value===null?true:isURL(value)),
         Registration: (value) => {if (value!==null){return value.length >0 && value.length <100 }else {return false}},
         Model_ID: (value) => (value!=0 || value!='0'),
-        Status: (value) => (value!='')
+        Status_ID: (value) => (value!=0 || value!='0')
     }
 
     const errorMessage ={
         Boat_Img: "Invalid URL",
         Registration: "Invalid Registration Number",
         Model_ID: "No model selected",
-        Status: "No Status selected"
+        Status_ID: "No Status selected"
     }
 
 
     const modelsEndpoint = '/model';
     const postWatercraftEndpoint = '/boats';
+    const statusEndpoint = '/status';
 
     
         //State ---------------------------------------
     const [watercraft, setWatercraft] = useState(initialWatercraft);
     const [modelList, setModelList] = useState([]);
+    const [statusList, setStatusList] = useState([]);
     const [loadingModelsMessage, setLoadingModelsMessage] = useState('loading...');
+    const [loadingStatusMessage, setLoadingStatusMessage] = useState('loading...');
     const[ errors, setErrors] = useState (Object.keys(initialWatercraft).reduce((acc, key) =>({...acc,[key]: null}), {}));
     
 
     // load in models
-    const apiGet = async(endPoint) => {
+    const apiGetModels = async(endPoint) => {
         const response = await API.get(endPoint);
         response.isSuccess
         ? setModelList(response.result)
         : setLoadingModelsMessage(response.message)
     };
 
-    useEffect(() => {apiGet(modelsEndpoint)},[modelsEndpoint]);
-    //console.log(modelList);
+    useEffect(() => {apiGetModels(modelsEndpoint)},[modelsEndpoint]);
+
+     // load in status
+     const apiGetStatus = async(endPoint) => {
+        const response = await API.get(endPoint);
+        response.isSuccess
+        ? setStatusList(response.result)
+        : setLoadingStatusMessage(response.message)
+    };
+
+    useEffect(() => {apiGetStatus(statusEndpoint)},[statusEndpoint]);
+    
 
     //Handlers -------------------------------------
     const handleCancel = () => {
@@ -150,13 +163,13 @@ function WatercraftForm({onSuccess}) {
                         </label>
 
                         <label htmlFor="Status"> Status
-                            <select name="Status" value={conformance.js2html["Status"](watercraft.Status)} onChange={handleChange}> 
-                                <option selected='true' value='' disabled>None Selected</option> 
+                            <select name="Status_ID" value={conformance.js2html["Status_ID"](watercraft.Status_ID)} onChange={handleChange}> 
+                                <option selected='true' value='0' disabled>None Selected</option> 
                                 {
-                                    ['Available', 'Booked', 'Maintenance', 'Out of Water'].map((status) => <option key={status} value={status}>{status}</option>)
+                                    statusList.map((status) => <option key={status.Status_ID} value={status.Status_ID}>{status.Status}</option>)
                                 }     
                             </select>
-                            <span className="error">{errors.Status}</span>
+                            <span className="error">{errors.Status_ID}</span>
                         </label>
 
                         <label htmlFor="Boat_Img"> Image URL
