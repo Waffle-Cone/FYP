@@ -4,6 +4,7 @@ import Express from "express";
 import database from "./database.js";
 import { check, validationResult } from "express-validator";
 import cors from "cors";  // this is to fix the issue with not being able to fecth from another domain. FINALLy !!!!!!!!!!!!!!
+import CONTROLLER from "./controller.js";
 
 
 
@@ -166,7 +167,8 @@ const addBoatController = async (req, res) => {
 
 // Endpoints --------------------------------------------------------------
 app.get('/api/boats', getBoatController); // for all boats
-app.get('/api/boats/:status', getBoatController); // for boats with specific status
+app.get('/api/boats/status/:id', (res,req)=> getBoatController(res,req,"status")); // for boats with specific status
+app.get('/api/boats/:id', (res,req)=> getBoatController(res,req,"primary")); // for a specific boat
 app.get('/api/model', getModelController); // get model name
 app.get('/api/status', getStatusController); //
 
