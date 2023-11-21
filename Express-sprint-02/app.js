@@ -46,56 +46,21 @@ const responseSetting = (res,method,result,message,isSuccess) => {
     }
 };
 
-// GET Controllers -------------------------------------------------------------
-const getBoatController = async (req, res) => {
-
-    const status = req.params.status; // when is Undefined it will be /api/boats 
-
-    // Build SQL
-        // get all boats
-    const table = 'boats';
-    const extendedTable = `${table} LEFT JOIN models ON boats.Model_ID = models.Model_ID
-    LEFT JOIN manufacturers ON models.Manufacturer_ID = manufacturers.Manufacturer_ID
-    LEFT JOIN watercrafttypes ON models.Type_ID = watercrafttypes.Type_ID 
-    LEFT JOIN boatstatus ON boats.Status_ID = boatstatus.Status_ID`;
-
-    const extendedField = ['boats.Registration, boats.Boat_Img, models.Model_Name, manufacturers.Manufacturer_Name, models.Img_URL, watercrafttypes.Type, boatstatus.Status'];
-
-    let sql = `SELECT ${extendedField} FROM ${extendedTable}`;
-    if(status) {sql += `WHERE boats.Status = "${status}"`} // when status is set we use where clause
-        //console.log(sql);
- 
-    // EXECUTE SQL
-    const {isSuccess, result, message} = await read(sql);
-    // RESPONSES 
-    responseSetting(res,'GET',result,message,isSuccess); // sets up the res.json for me
+const buildWatercraftSelectSQL = (id) => {
+    const table = 'Boats'
+    let sql = `SELECT * FROM ${table}
+            WHERE Registration= ${id}`;
+    return sql;
 };
 
-// model controller
-const getModelController = async (req,res) => {
+const buildWatercraftSelectSQL2 = (id,varient) => {
+    let sql= ''
 
-    // Build SQL
-        // get all model name
-    const table = 'models';
-    const extendedTable = `${table}`;
+    const table = ''
+    const extendedTable = `${table}`
+    const fileds =['']
+    const extendedFields = [''];
 
-    const extendedField = ['models.Model_ID,models.Model_Name'];
-
-    let sql = `SELECT ${extendedField} FROM ${extendedTable}`;
-    console.log("Fetched models");
-    // EXECUTE SQL
-    const {isSuccess, result, message} = await read(sql);
-    // RESPONSES 
-    responseSetting(res,'GET',result,message,isSuccess);
-};
-
-const getStatusController = async (req,res)=>{
-    const table ='boatstatus';
-    const fields = ['Status_ID,Status'];
-    let sql = `SELECT ${fields} from ${table}`;
-    console.log("Feteched status");
-    const {isSuccess, result, message} = await read(sql);
-    responseSetting(res,'GET',result,message,isSuccess); 
 };
 
 //post sql
@@ -110,12 +75,6 @@ const buildWatercraftInsertSQL = (record) => {
 
 };
 
-const buildWatercraftSelectSQL = (id) => {
-    const table = 'Boats'
-    let sql = `SELECT * FROM ${table}
-            WHERE Registration= ${id}`;
-    return sql;
-};
 // CREATE, READ
 const createWatercraft = async (sql,record) => {
     try {
@@ -137,7 +96,53 @@ const createWatercraft = async (sql,record) => {
 };
 
 
+// GET Controllers -------------------------------------------------------------
+const getBoatController = async (req, res) => {
 
+    const status = req.params.status; // when is Undefined it will be /api/boats 
+
+    const table = 'boats';
+    const extendedTable = `${table} LEFT JOIN models ON boats.Model_ID = models.Model_ID
+    LEFT JOIN manufacturers ON models.Manufacturer_ID = manufacturers.Manufacturer_ID
+    LEFT JOIN watercrafttypes ON models.Type_ID = watercrafttypes.Type_ID 
+    LEFT JOIN boatstatus ON boats.Status_ID = boatstatus.Status_ID`;
+
+    const extendedField = ['boats.Registration, boats.Boat_Img, models.Model_Name, manufacturers.Manufacturer_Name, models.Img_URL, watercrafttypes.Type, boatstatus.Status'];
+
+    let sql = `SELECT ${extendedField} FROM ${extendedTable}`;
+    if(status) {sql += `WHERE boats.Status = "${status}"`} // when status is set we use where clause
+ 
+    // EXECUTE SQL
+    const {isSuccess, result, message} = await read(sql);
+    // RESPONSES 
+    responseSetting(res,'GET',result,message,isSuccess); // sets up the res.json for me
+};
+
+// model controller
+const getModelController = async (req,res) => {
+
+    // Build SQL
+    const table = 'models';
+    const extendedTable = `${table}`;
+
+    const extendedField = ['models.Model_ID,models.Model_Name'];
+
+    let sql = `SELECT ${extendedField} FROM ${extendedTable}`;
+    console.log("Fetched models");
+    // EXECUTE SQL
+    const {isSuccess, result, message} = await read(sql);
+    // RESPONSES 
+    responseSetting(res,'GET',result,message,isSuccess);
+};
+
+const getStatusController = async (req,res)=>{
+    const table ='boatstatus';
+    const fields = ['Status_ID,Status'];
+    let sql = `SELECT ${fields} from ${table}`;
+    console.log("Feteched status");
+    const {isSuccess, result, message} = await read(sql);
+    responseSetting(res,'GET',result,message,isSuccess); 
+};
 
 //POST Controllers
 

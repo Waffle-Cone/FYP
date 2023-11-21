@@ -58,32 +58,10 @@ function WatercraftForm({onSuccess}) {
     
         //State ---------------------------------------
     const [watercraft, setWatercraft] = useState(initialWatercraft);
-    const [modelList, setModelList] = useState([]);
-    const [statusList, setStatusList] = useState([]);
-    const [loadingModelsMessage, setLoadingModelsMessage] = useState('loading...');
-    const [loadingStatusMessage, setLoadingStatusMessage] = useState('loading...');
+    const [modelList, setModelList,loadingModelsMessage,loadModels] = useLoad(modelsEndpoint)
+    const [statusList, setStatusList,loadingStatusMessage, loadStatus] = useLoad(statusEndpoint)
     const[ errors, setErrors] = useState (Object.keys(initialWatercraft).reduce((acc, key) =>({...acc,[key]: null}), {}));
     
-
-    // load in models
-    const apiGetModels = async(endPoint) => {
-        const response = await API.get(endPoint);
-        response.isSuccess
-        ? setModelList(response.result)
-        : setLoadingModelsMessage(response.message)
-    };
-
-    useEffect(() => {apiGetModels(modelsEndpoint)},[modelsEndpoint]);
-
-     // load in status
-     const apiGetStatus = async(endPoint) => {
-        const response = await API.get(endPoint);
-        response.isSuccess
-        ? setStatusList(response.result)
-        : setLoadingStatusMessage(response.message)
-    };
-
-    useEffect(() => {apiGetStatus(statusEndpoint)},[statusEndpoint]);
     
 
     //Handlers -------------------------------------
@@ -152,23 +130,31 @@ function WatercraftForm({onSuccess}) {
                         </label>
 
                         <label htmlFor="Model_ID"> Model
-                            <select name="Model_ID" value={conformance.js2html["Model_ID"](watercraft.Model_ID)} onChange={handleChange}>
-                            <option selected='true' value='0' disabled>None Selected</option>
-                              {
-                                modelList.sort((a, b) => a.Model_Name.localeCompare(b.Model_Name))   ///sort by Model_Name
-                                .map((model) => <option key={model.Model_ID} value={model.Model_ID}>{model.Model_Name}</option>)
-                              }
-                            </select>
-                            <span className="error">{errors.Model_ID}</span>
+                            {!modelList
+                            ?<p>loadingModelsMessage</p>
+                            :(
+                                <select name="Model_ID" value={conformance.js2html["Model_ID"](watercraft.Model_ID)} onChange={handleChange}>
+                                <option selected='true' value='0' disabled>None Selected</option>
+                                {
+                                    modelList.sort((a, b) => a.Model_Name.localeCompare(b.Model_Name))   ///sort by Model_Name
+                                    .map((model) => <option key={model.Model_ID} value={model.Model_ID}>{model.Model_Name}</option>)
+                                }
+                                </select>
+                            )}
+                                <span className="error">{errors.Model_ID}</span>  
                         </label>
 
                         <label htmlFor="Status"> Status
+                        {!statusList
+                            ?<p>loadingModelsMessage</p>
+                            :(
                             <select name="Status_ID" value={conformance.js2html["Status_ID"](watercraft.Status_ID)} onChange={handleChange}> 
                                 <option selected='true' value='0' disabled>None Selected</option> 
                                 {
                                     statusList.map((status) => <option key={status.Status_ID} value={status.Status_ID}>{status.Status}</option>)
                                 }     
                             </select>
+                            )}
                             <span className="error">{errors.Status_ID}</span>
                         </label>
 
