@@ -2,18 +2,18 @@ import database from "../../database.js";
 import buildWatercraftSelectSQL from "../Build_SQL/buildWatercraftSelectSQL.js";
 import Query from "../Query.js";
 
-const createWatercraft = async (sql,record) => {
+const updateWatercraft = async (sql,id,record) => {
     try {
 
-        const status = await database.query(sql,record);
+        const status = await database.query(sql,{...record, Synthetic_Key: id});
 
-        const recoverRecordSql = buildWatercraftSelectSQL(status[0].insertId,'POST')
+        const recoverRecordSql = buildWatercraftSelectSQL(id,'PUT')
 
         const {isSuccess, result, message} = await Query.read(recoverRecordSql);
 
         return isSuccess
         ? { isSuccess:true, result: result, message:"Record found"}
-        : { isSuccess:false, result:null,message:`Failed to recover the inserted record: ${message}`};
+        : { isSuccess:false, result:null,message:`Failed to recover the updated record: ${message}`};
 
     }
     catch(e) {
@@ -21,4 +21,4 @@ const createWatercraft = async (sql,record) => {
     };
 };
 
-export default createWatercraft;
+export default updateWatercraft;

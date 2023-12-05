@@ -1,7 +1,7 @@
 
 const responseSetting = (res,method,result,message,isSuccess) => {
 
-    if(method === 'GET')
+    if(method === 'GET' || method === 'PUT')
     {
         return isSuccess 
         ? res.status(200).json(result) // set status to 200 then return result as json
