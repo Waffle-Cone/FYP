@@ -7,6 +7,7 @@ import getModelController from "./Controllers/getModelController.js";
 import getStatusController from "./Controllers/getStatusController.js";
 import addBoatController from "./Controllers/addBoatController.js";
 import putBoatController from "./Controllers/putBoatController.js";
+import deleteBoatController from "./Controllers/deleteBoatController.js";
 
 //Configure express app with middleware --------------------------------------------------
 const app = appSetup();
@@ -25,8 +26,8 @@ app.get('/api/status', (req,res)=>getStatusController(req,res));
 app.post('/api/boats', FormValidator.validateAddBoatForm(),(req,res)=>addBoatController(req,res));
 
 //updating/ modifying a boat
-app.put('/api/boats/:id',FormValidator.validateAddBoatForm(),(req,res)=>putBoatController(req,res))
-//app.put('/api/boats/:id',(req,res)=>deleteBoatController(req,res))
+app.put('/api/boats/:id',(req,res)=>putBoatController(req,res))
+app.delete('/api/boats/:id',(req,res)=>deleteBoatController(req,res))
 
 // Start server -----------------------------------------------------------
 serverStart(app);

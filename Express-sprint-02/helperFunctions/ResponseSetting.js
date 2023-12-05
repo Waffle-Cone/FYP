@@ -13,6 +13,12 @@ const responseSetting = (res,method,result,message,isSuccess) => {
         ?res.status(404).json({message})
         :res.status(201).json(result)
     }
+    else if(method === 'DELETE')
+    {
+        return !isSuccess
+        ?res.status(400).json({message})
+        :res.status(204).json({message}) // delete doesnt return  result anyway so might as well set a postive message here 
+    }
 };
 
 export default responseSetting;
