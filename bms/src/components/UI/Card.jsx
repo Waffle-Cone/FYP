@@ -13,5 +13,12 @@ export function Card(props){
     //state  --------------------------------------------------------------
     //Handlers ------------------------------------------------------------
     //View ----------------------------------------------------------------
-    return(<div className='card'> {props.children}</div>);
+    return(
+        <>
+            <div className='card'> 
+                {props.children}
+            </div>
+              
+        </>
+    );
 };

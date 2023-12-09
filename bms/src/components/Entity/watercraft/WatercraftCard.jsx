@@ -18,8 +18,14 @@ function WatercraftCard ({watercraft}){
                     <p>{watercraft.Registration}</p>
                     <p>{watercraft.Model_Name}</p>
                     <p>{watercraft.Type}</p>
-                    <p>{watercraft.Status}</p>   
-                </Card>     
+                    <p>{watercraft.Status}</p>
+
+                    <div className="buttonTray">    
+                        <button >Modify</button> 
+                        <button >Delete</button>
+                    </div>    
+                </Card> 
+               
             </div>
     );
 }
