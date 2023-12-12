@@ -5,6 +5,7 @@ import Login from './components/view/Login.jsx';
 import PageNotFound from './components/view/PageNotFound.jsx';
 import WaterCraft from './components/view/Watercraft.jsx';
 import WatercraftForm from './components/entity/watercraft/WatercraftForm.jsx';
+import ModifyWatercraftForm from './components/Entity/watercraft/ModifyWatercraftForm.jsx';
 
 function App() {
   const loggedInUser = "Admin";
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" element= {<Login/>}/>  
           <Route path="/watercraft" element= {<WaterCraft/>}/>
           <Route path="/addWatercraft" element= {<WatercraftForm/>}/>
+          <Route path="/editWatercraft" element= {<ModifyWatercraftForm/>}/> 
           <Route path="/*"element={<PageNotFound />}/>
         </Routes>    
       </Layout>

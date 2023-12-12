@@ -6,8 +6,9 @@ const createWatercraft = async (sql,record) => {
     try {
 
         const status = await database.query(sql,record);
+        console.log("Hello"+ status[0].insertId)
 
-        const recoverRecordSql = buildWatercraftSelectSQL(status[0].insertId,'POST')
+        const recoverRecordSql = buildWatercraftSelectSQL(status[0].insertId)
 
         const {isSuccess, result, message} = await Query.read(recoverRecordSql);
 

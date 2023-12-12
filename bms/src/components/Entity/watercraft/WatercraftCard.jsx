@@ -1,9 +1,17 @@
 import PropTypes from 'prop-types';
 import { Card } from "../../UI/Card";
 import "./WatercraftCard.scss"
+import { useNavigate } from 'react-router-dom';
+
 
 function WatercraftCard ({watercraft}){
     // Initialisation ------------------------------------------------------
+    const navigate = useNavigate();
+
+    //Handlers
+    const handleEdit = ()=> {
+        navigate('/editWatercraft', {state: {initialWatercraft: watercraft}});
+    }
     // State ---------------------------------------------------------------
     // View ----------------------------------------------------------------
     return (
@@ -21,7 +29,7 @@ function WatercraftCard ({watercraft}){
                     <p>{watercraft.Status}</p>
 
                     <div className="buttonTray">    
-                        <button >Modify</button> 
+                        <button onClick={handleEdit}>Edit</button> 
                         <button >Delete</button>
                     </div>    
                 </Card> 

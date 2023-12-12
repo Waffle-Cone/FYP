@@ -1,23 +1,32 @@
-import { useState, useEffect, Button } from "react";
+import { useState, useEffect } from "react";
 import API from "../../API/API";
 import './WatercraftForm.scss';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation} from "react-router-dom";
 import isURL from 'is-url';
 import useLoad from "../../API/useLoad.jsx";
 
+let initialWatercraft = 
+    {
+        Boat_Img: null,
+        Registration: null,
+        Model_ID: 0,
+        Status_ID: 0
+    }
 
-const initialWatercraft = 
-{
-    Boat_Img: null,
-    Registration: null,
-    Model_ID: 0,
-    Status_ID: 0
-};
-
-function WatercraftForm({onSuccess}) {
+function ModifyWatercraftForm() {
     // Initialisation ------------------------------
     const navigate = useNavigate(); //used to navigate to diffent pages
-
+    const {state} = useLocation();
+    if(state.initialWatercraft != null) 
+    {
+        initialWatercraft = state.initialWatercraft
+        const selectedID = state.initialWatercraft.Synthetic_Key // needed for put later
+        console.log(state.initialWatercraft);
+        console.log("The selected ID is " + selectedID);
+    }
+    else{
+        console.log("Making new")
+    }
 
     const conformance ={
         html2js:{
@@ -52,8 +61,9 @@ function WatercraftForm({onSuccess}) {
 
 
     const modelsEndpoint = '/model';
-    const postWatercraftEndpoint = '/boats';
+    const putWatercraftEndpoint = '/boats/:id'
     const statusEndpoint = '/status';
+
 
     
         //State ---------------------------------------
@@ -97,17 +107,17 @@ function WatercraftForm({onSuccess}) {
         setErrors({...errors});
         if(check)
         {
-            const result = await API.post(postWatercraftEndpoint, watercraft);
+            const result = await API.put(`${putWatercraftEndpoint}/${selectedID}`, watercraft);
             console.log(result);
             if(result.isSuccess) 
             {
-                alert("Insert success")
+                alert("Modify success")
                 navigate('/watercraft');
 
             }
             else{
                 
-                alert(`Insert NOT Successful: ${result.message}`);
+                alert(`Modify NOT Successful: ${result.message}`);
             }
         }
     };
@@ -116,7 +126,7 @@ function WatercraftForm({onSuccess}) {
     //View -----------------------------------------
     return (
         <>
-            <h1 id="title">Add a Watercraft to your fleet</h1>
+            <h1 id="title">Editing Watercraft</h1>
             <div className="watercraftForm">
                     <div className="formTray">
                         <label htmlFor="Registration"> Registration
@@ -134,7 +144,7 @@ function WatercraftForm({onSuccess}) {
                             ?<p>loadingModelsMessage</p>
                             :(
                                 <select name="Model_ID" value={conformance.js2html["Model_ID"](watercraft.Model_ID)} onChange={handleChange}>
-                                <option selected='true' value='0' disabled>None Selected</option>
+                                <option selected={true} value='0' disabled>None Selected</option>
                                 {
                                     modelList.sort((a, b) => a.Model_Name.localeCompare(b.Model_Name))   ///sort by Model_Name
                                     .map((model) => <option key={model.Model_ID} value={model.Model_ID}>{model.Model_Name}</option>)
@@ -149,7 +159,7 @@ function WatercraftForm({onSuccess}) {
                             ?<p>loadingModelsMessage</p>
                             :(
                             <select name="Status_ID" value={conformance.js2html["Status_ID"](watercraft.Status_ID)} onChange={handleChange}> 
-                                <option selected='true' value='0' disabled>None Selected</option> 
+                                <option selected={true} value='0' disabled>None Selected</option> 
                                 {
                                     statusList.map((status) => <option key={status.Status_ID} value={status.Status_ID}>{status.Status}</option>)
                                 }     
@@ -179,4 +189,4 @@ function WatercraftForm({onSuccess}) {
 
 }
 
-export default WatercraftForm;
+export default ModifyWatercraftForm;

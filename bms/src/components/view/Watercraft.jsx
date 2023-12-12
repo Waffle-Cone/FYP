@@ -27,16 +27,12 @@ function WaterCraft(){
     const showForm = () => {
         navigate('/addWatercraft');
     };
-    const handleCancel = () => navigate('/watercraft');
-    const handleSuccess = async() => {
-        
-    }
 
     //View ----------------------------------------------------------------
 
     return(
         <>
-        <button onClick={showForm} onSuccess={handleSuccess}>Add Watercraft</button>
+        <button onClick={showForm} >Add Watercraft</button>
         {
             !watercrafts
             ?<p>{loadingMessage}</p>
@@ -45,7 +41,7 @@ function WaterCraft(){
                 : (
                     <>
                         <CardContainer>
-                            {watercrafts.map((watercraft) => <WatercraftCard watercraft={watercraft} key={watercraft.Registration_Number}/> )}
+                            {watercrafts.map((watercraft) => <WatercraftCard watercraft={watercraft} key={watercraft.Synthetic_Key}/> )}
                         </CardContainer>
                     </>
                 )}

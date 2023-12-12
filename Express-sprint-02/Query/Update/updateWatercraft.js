@@ -10,7 +10,7 @@ const updateWatercraft = async (sql,id,record) => {
       if (status[0].affectedRows === 0)
         return{isSuccess:false, result: null, message: `Failed to update record: no rows affected`};
 
-        const recoverRecordSql = buildWatercraftSelectSQL(id,'PUT')
+        const recoverRecordSql = buildWatercraftSelectSQL(id)
 
         const {isSuccess, result, message} = await Query.read(recoverRecordSql);
 
