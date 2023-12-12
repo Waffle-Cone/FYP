@@ -17,16 +17,17 @@ function ModifyWatercraftForm() {
     // Initialisation ------------------------------
     const navigate = useNavigate(); //used to navigate to diffent pages
     const {state} = useLocation();
-    if(state.initialWatercraft != null) 
+    initialWatercraft = 
     {
-        initialWatercraft = state.initialWatercraft
-        const selectedID = state.initialWatercraft.Synthetic_Key // needed for put later
-        console.log(state.initialWatercraft);
-        console.log("The selected ID is " + selectedID);
-    }
-    else{
-        console.log("Making new")
-    }
+        Boat_Img: state.initialWatercraft.Boat_Img,
+        Registration: state.initialWatercraft.Registration,
+        Model_ID: state.initialWatercraft.Model_ID,
+        Status_ID: state.initialWatercraft.Status_ID
+    }    
+    const selectedID = state.initialWatercraft.Synthetic_Key // needed for put later
+    console.log(state.initialWatercraft);
+    console.log("The selected ID is " + selectedID);
+    
 
     const conformance ={
         html2js:{
@@ -61,7 +62,7 @@ function ModifyWatercraftForm() {
 
 
     const modelsEndpoint = '/model';
-    const putWatercraftEndpoint = '/boats/:id'
+    const putWatercraftEndpoint = '/boats'
     const statusEndpoint = '/status';
 
 
@@ -90,7 +91,8 @@ function ModifyWatercraftForm() {
 
     const isValidWatercraft =(watercraft) => {
         var isWatercraftValid = true;
-        Object.keys(watercraft).forEach((key) => { // we do this becasue setErrors is asychronous thus we cannot determine its stte when we need to go through it
+        Object.keys(watercraft).forEach((key) => { 
+            console.log("Key " + key)// we do this becasue setErrors is asychronous thus we cannot determine its stte when we need to go through it
             if(isValid[key](watercraft[key])){
                 errors[key] = null;
             }else {
