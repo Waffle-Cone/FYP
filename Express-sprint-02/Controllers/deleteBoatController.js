@@ -18,6 +18,7 @@ const deleteBoatController = async (req, res) => {
     const {isSuccess, result, message: accessorMessage} = await deleteWatercraft(sql,id);
     const check = responseSetting(res,'DELETE',result,accessorMessage,isSuccess);
    
+   
     }
 };
 

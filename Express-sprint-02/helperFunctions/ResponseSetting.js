@@ -17,7 +17,7 @@ const responseSetting = (res,method,result,message,isSuccess) => {
     {
         return !isSuccess
         ?res.status(400).json({message})
-        :res.status(204).json({message}) // delete doesnt return  result anyway so might as well set a postive message here 
+        :res.status(201).json({message}) // delete doesnt return  result anyway so might as well set a postive message here 
     }
 };
 
