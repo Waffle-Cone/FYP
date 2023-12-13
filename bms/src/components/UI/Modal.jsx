@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {Modal, Button} from 'react-bootstrap'
-import WatercraftCard from '../Entity/watercraft/WatercraftCard';
 import './Modal.scss'
 
 const MODAL = {};
@@ -20,20 +19,31 @@ const DeleteConfirm =(show, handleModalClose,toDelete,handleDelete) => {
 
     return (
         <>
-          <Modal show={show} onHide={handleModalClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>Confirm Deletion</Modal.Title>
-            </Modal.Header>
-            <Modal.Body> Deleting: {toDelete.Type} with Registration: {toDelete.Registration}</Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleModalClose}>
-                Cancel
-              </Button>
-              <Button variant="primary" onClick={()=>handleDelete()}>
-                Delete
-              </Button>
-            </Modal.Footer>
-          </Modal>
+        <Modal 
+            show={show} 
+            onHide={handleModalClose} 
+            backdrop="static"
+            keyboard={false}
+            className='modal'
+        >
+            <div className='modal-content'>
+                <div className='modal-container'>
+                <Modal.Header closeButton>
+                <Modal.Title>Confirm Deletion</Modal.Title>
+                </Modal.Header>
+                <Modal.Body > Deleting: {toDelete.Type} with Registration: {toDelete.Registration}</Modal.Body>
+                <Modal.Footer>
+                <Button variant="secondary" onClick={handleModalClose}>
+                    Cancel
+                </Button>
+                <Button variant="primary" onClick={()=>handleDelete()}>
+                    Delete
+                </Button>
+                </Modal.Footer>
+                </div>
+            </div>
+        </Modal>
+          
         </>
       );
 }

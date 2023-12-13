@@ -1,0 +1,26 @@
+.modal {
+    position: absolute; /* Stay in place */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.50); /* Black w/ opacity */
+    overflow: hidden;
+  }
+  
+  /* Modal Content/Box */
+  .modal-content {
+    background-color: #dddddd;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 2px;
+    border: 1px solid #888;
+    width: 50%; /* Could be more or less, depending on screen size */
+    
+  }
+
+  .modal-container {
+    padding: 16px;
+    text-align: center;
+  }
