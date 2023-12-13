@@ -8,12 +8,15 @@ const MODAL = {};
 const useModal  =() => {
     const [showModal, setShowModal] = useState(false);
     const [toDelete, setToDelete] = useState(null);
+    const [selectedButton, setSelectedButton] = useState(null);
     const handleModalClose = () => setShowModal(false);
     const handleModalShow = () => setShowModal(true);
+    
 
     return [showModal,setShowModal, handleModalClose, handleModalShow,toDelete,setToDelete];
 }
-const DeleteConfirm =(show, handleModalClose,toDelete) => {
+
+const DeleteConfirm =(show, handleModalClose,toDelete,handleDelete) => {
 
     return (
         <>
@@ -24,10 +27,10 @@ const DeleteConfirm =(show, handleModalClose,toDelete) => {
             <Modal.Body> Deleting: {toDelete.Type} with Registration: {toDelete.Registration}</Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleModalClose}>
-                Close
+                Cancel
               </Button>
-              <Button variant="primary" onClick={handleModalClose}>
-                Save Changes
+              <Button variant="primary" onClick={()=>handleDelete()}>
+                Delete
               </Button>
             </Modal.Footer>
           </Modal>
@@ -36,7 +39,7 @@ const DeleteConfirm =(show, handleModalClose,toDelete) => {
 }
 
 MODAL.useModal = useModal;
-MODAL.DeleteConfirm = (show,handleModalClose,toDelete) => DeleteConfirm(show,handleModalClose,toDelete);
+MODAL.DeleteConfirm = (show,handleModalClose,toDelete,handleDelete) => DeleteConfirm(show,handleModalClose,toDelete,handleDelete);
 
 
 export default MODAL;

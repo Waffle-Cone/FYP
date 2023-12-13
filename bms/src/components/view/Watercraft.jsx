@@ -11,6 +11,8 @@ function WaterCraft(){
     //Initialisation ------------------------------------------------------
     const navigate = useNavigate();
     const endPoint = `/boats`;
+    const deleteWatercraftEndpoint = '/boats'
+
     //state  --------------------------------------------------------------
     const [ watercrafts, setWatercrafts, loadingMessage, loadWatercrafts ] = useLoad(endPoint)
     const [ showModal,setShowModal, handleModalClose, handleModalShow,toDelete,setToDelete ] = MODAL.useModal();
@@ -24,8 +26,20 @@ function WaterCraft(){
         setToDelete(selectedWatercraft);
     };
     
-    
+    const handleDelete = async ()=> {
+        console.log('Delete Watercraft' + toDelete.Synthetic_Key);
+        const selectedID = toDelete.Synthetic_Key
 
+        console.log(" Watercraft: Deleted Watercraft")
+            const result = await API.delete(`${deleteWatercraftEndpoint}/${selectedID}`);
+            console.log(result);
+            setShowModal(false)    
+            if(result.isSuccess == false) 
+            {
+                alert(`Delete NOT Successful: ${result.message}`)
+            }
+            loadWatercrafts(endPoint)
+    };
     
     //View ----------------------------------------------------------------
 
@@ -34,7 +48,7 @@ function WaterCraft(){
         {
             !showModal
             ?null
-            :MODAL.DeleteConfirm(showModal,handleModalClose,toDelete)
+            :MODAL.DeleteConfirm(showModal,handleModalClose,toDelete,handleDelete)
             
         }
         <button onClick={showForm} >Add Watercraft</button>
