@@ -1,3 +1,16 @@
 div.watercraftCard {
     width: 200px;
 }
+
+div.buttonTrayON{
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    button{
+        padding: 5px;
+    }
+}
+
+div.buttonTrayOFF{
+    display: none;
+}

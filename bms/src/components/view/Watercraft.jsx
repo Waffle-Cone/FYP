@@ -16,7 +16,14 @@ function WaterCraft(){
     //state  --------------------------------------------------------------
     const [ watercrafts, setWatercrafts, loadingMessage, loadWatercrafts ] = useLoad(endPoint)
     const [ showModal,setShowModal, handleModalClose, handleModalShow,toDelete,setToDelete ] = MODAL.useModal();
+    const [editMode,setEditMode] = useState(false);
     //Handlers ------------------------------------------------------------
+    const showEditMode = ()=>{
+        setEditMode(true);
+    }
+    const hideEditMode = ()=>{
+        setEditMode(false);
+    }
     const showForm = () => {
         navigate('/addWatercraft');
     };
@@ -51,7 +58,16 @@ function WaterCraft(){
             :MODAL.DeleteConfirm(showModal,handleModalClose,toDelete,handleDelete)
             
         }
-        <button onClick={showForm} >Add Watercraft</button>
+        {
+            !editMode
+            ?
+                <div className="buttonTray">
+                    <button onClick={showForm} >Add Watercraft</button> 
+                    <button onClick={showEditMode} >Edit </button> 
+                </div>
+            :<button onClick={hideEditMode} > Cancel </button>
+        }
+       
         {
             !watercrafts
             ?<p>{loadingMessage}</p>
@@ -60,7 +76,7 @@ function WaterCraft(){
                 : (
                     <>
                         <CardContainer>
-                            {watercrafts.map((watercraft) => <WatercraftCard openModal = {openModal} watercraft={watercraft} key={watercraft.Synthetic_Key}/> )}
+                            {watercrafts.map((watercraft) => <WatercraftCard editMode = {editMode} openModal = {openModal} watercraft={watercraft} key={watercraft.Synthetic_Key}/> )}
                         </CardContainer>
                     </>
                 )}

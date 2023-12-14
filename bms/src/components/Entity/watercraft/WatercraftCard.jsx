@@ -5,13 +5,19 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-function WatercraftCard ({watercraft, openModal}){
+function WatercraftCard ({watercraft, openModal, editMode}){
     // Initialisation ------------------------------------------------------
     const navigate = useNavigate();
     // State ---------------------------------------------------------------
     //Handlers
     const handleEdit = ()=> {
         navigate('/editWatercraft', {state: {initialWatercraft: watercraft}});
+    }
+    let displayButtons = "buttonTrayOFF";
+
+    if(editMode)
+    {
+        displayButtons= "buttonTrayON";
     }
     
     // View ----------------------------------------------------------------
@@ -27,11 +33,17 @@ function WatercraftCard ({watercraft, openModal}){
                         <p>{watercraft.Model_Name}</p>
                         <p>{watercraft.Type}</p>
                         <p>{watercraft.Status}</p>
-
-                        <div className="buttonTray">    
+                        {
+                            !editMode
+                            ?  null
+                            :<div className= {displayButtons}>    
                             <button onClick={handleEdit}>Edit</button> 
                             <button onClick={()=> openModal(watercraft)}>Delete</button>
-                        </div>    
+                            </div>
+                             
+                              
+                        }
+                        
                     </Card> 
                 
                 </div>

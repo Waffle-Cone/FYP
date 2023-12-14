@@ -26,20 +26,22 @@ const DeleteConfirm =(show, handleModalClose,toDelete,handleDelete) => {
             keyboard={false}
             className='modal'
         >
-            <div className='modal-content'>
-                <div className='modal-container'>
-                <Modal.Header closeButton>
-                <Modal.Title>Confirm Deletion</Modal.Title>
-                </Modal.Header>
-                <Modal.Body > Deleting: {toDelete.Type} with Registration: {toDelete.Registration}</Modal.Body>
-                <Modal.Footer>
-                <Button variant="secondary" onClick={handleModalClose}>
-                    Cancel
-                </Button>
-                <Button variant="primary" onClick={()=>handleDelete()}>
-                    Delete
-                </Button>
-                </Modal.Footer>
+            <div className='content'>
+                <div className='Container'>
+                    <Modal.Header className='header'>
+                    <Modal.Title id='title'>Confirm Deletion</Modal.Title>
+                    </Modal.Header>
+                    
+                    <Modal.Body id='body'> Deleting: {toDelete.Type} with Registration: {toDelete.Registration}</Modal.Body>
+                   
+                    <Modal.Footer className='footer'>
+                    <Button id='btn' variant="secondary" onClick={handleModalClose}>
+                        Cancel
+                    </Button>
+                    <Button id='btn2' variant="primary" onClick={()=>handleDelete()}>
+                        Delete
+                    </Button>
+                    </Modal.Footer>
                 </div>
             </div>
         </Modal>
