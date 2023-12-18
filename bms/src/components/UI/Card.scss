@@ -10,6 +10,8 @@ div.cardContainer
 
     div.card{ 
         width: 100%;
+        display: flex;
+        flex-direction: column;
         height: 100%;
         padding: 10px;       
         border: 1px solid lightgray;
@@ -17,6 +19,11 @@ div.cardContainer
         box-shadow: 4px 4px 8px rgba(70, 70, 0, 3);
 
         img {width: 100%; display: block; border-radius: 0px 0px 3px 3px;}
+
+        div.tray{
+          margin-top: auto;
+        }
         
     }
+    
 }

@@ -4,6 +4,7 @@ import './WatercraftForm.scss';
 import { useNavigate, useLocation} from "react-router-dom";
 import isURL from 'is-url';
 import useLoad from "../../API/useLoad.jsx";
+import Action from "../../UI/Actions";
 
 let initialWatercraft = 
     {
@@ -113,7 +114,6 @@ function ModifyWatercraftForm() {
             console.log(result);
             if(result.isSuccess) 
             {
-                alert("Modify success")
                 navigate('/watercraft');
 
             }
@@ -180,10 +180,12 @@ function ModifyWatercraftForm() {
                         </label>
                     </div>
 
-                    <div className="buttonTray">    
-                        <button onClick={handleCancel}>Cancel</button> 
-                        <button onClick={handleSubmit}>Submit</button>
-                    </div>
+                      <Action.Tray>
+                        <Action.Cancel buttonText="Cancel" showText={true} onClick={handleCancel}></Action.Cancel>
+                        <Action.Submit buttonText="Submit" showText={true} onClick={handleSubmit}></Action.Submit>
+                      </Action.Tray>
+                        
+                    
             </div>
        </>
     );

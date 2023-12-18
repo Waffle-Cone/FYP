@@ -4,6 +4,7 @@ import './WatercraftForm.scss';
 import { useNavigate } from "react-router-dom";
 import isURL from 'is-url';
 import useLoad from "../../API/useLoad.jsx";
+import Action from "../../UI/Actions";
 
 
 const initialWatercraft = 
@@ -168,10 +169,10 @@ function WatercraftForm({onSuccess}) {
                         </label>
                     </div>
 
-                    <div className="buttonTray">    
-                        <button onClick={handleCancel}>Cancel</button> 
-                        <button onClick={handleSubmit}>Submit</button>
-                    </div>
+                    <Action.Tray>
+                        <Action.Cancel buttonText="Cancel" showText={true} onClick={handleCancel}></Action.Cancel>
+                        <Action.Submit buttonText="Submit" showText={true} onClick={handleSubmit}></Action.Submit>
+                    </Action.Tray>
             </div>
        </>
     );
