@@ -5,6 +5,7 @@ import { useNavigate, useLocation} from "react-router-dom";
 import isURL from 'is-url';
 import useLoad from "../../API/useLoad.jsx";
 import Action from "../../UI/Actions";
+import FORM from "../../UI/Form";
 
 let initialWatercraft = 
     {
@@ -129,64 +130,62 @@ function ModifyWatercraftForm() {
     return (
         <>
             <h1 id="title">Editing Watercraft</h1>
-            <div className="watercraftForm">
-                    <div className="formTray">
-                        <label htmlFor="Registration"> Registration
-                            <input 
+            <FORM.Container> 
+                    <FORM.Tray>
+                        <FORM.Input 
+                            htmlFor="Registration"
+                            text = "Registration Number"
                             type="text" 
-                            name="Registration" 
-                            value= {conformance.js2html["Registration"](watercraft.Registration)}
+                            FieldName="Registration" 
+                            conformance= {conformance.js2html["Registration"](watercraft.Registration)}
                             onChange={handleChange}
-                            />
-                            <span className="error">{errors.Registration}</span>
-                        </label>
+                            errors = {errors.Registration}
+                        />
+                        <FORM.Select
+                            htmlFor= "Model_ID"
+                            text = "Model"
+                            list = {modelList}
+                            loadingMessage = {loadingModelsMessage}
+                            name = "Model_ID"
+                            conformance = {conformance.js2html["Model_ID"](watercraft.Model_ID)}
+                            onChange = {handleChange}
+                            listKey = "Model_ID"
+                            listValue= "Model_ID"
+                            listText= "Model_Name"
+                            errors = {errors.Model_ID}
+                        />
 
-                        <label htmlFor="Model_ID"> Model
-                            {!modelList
-                            ?<p>loadingModelsMessage</p>
-                            :(
-                                <select name="Model_ID" value={conformance.js2html["Model_ID"](watercraft.Model_ID)} onChange={handleChange}>
-                                <option selected={true} value='0' disabled>None Selected</option>
-                                {
-                                    modelList.sort((a, b) => a.Model_Name.localeCompare(b.Model_Name))   ///sort by Model_Name
-                                    .map((model) => <option key={model.Model_ID} value={model.Model_ID}>{model.Model_Name}</option>)
-                                }
-                                </select>
-                            )}
-                                <span className="error">{errors.Model_ID}</span>  
-                        </label>
-
-                        <label htmlFor="Status"> Status
-                        {!statusList
-                            ?<p>loadingModelsMessage</p>
-                            :(
-                            <select name="Status_ID" value={conformance.js2html["Status_ID"](watercraft.Status_ID)} onChange={handleChange}> 
-                                <option selected={true} value='0' disabled>None Selected</option> 
-                                {
-                                    statusList.map((status) => <option key={status.Status_ID} value={status.Status_ID}>{status.Status}</option>)
-                                }     
-                            </select>
-                            )}
-                            <span className="error">{errors.Status_ID}</span>
-                        </label>
-
-                        <label htmlFor="Boat_Img"> Image URL
-                            <input 
+                        <FORM.Select
+                            htmlFor= "Status"
+                            text = "Status"
+                            list = {statusList}
+                            loadingMessage = {loadingStatusMessage}
+                            name = "Status_ID"
+                            conformance = {conformance.js2html["Status_ID"](watercraft.Status_ID)}
+                            onChange = {handleChange}
+                            listKey = "Status_ID"
+                            listValue= "Status_ID"
+                            listText= "Status"
+                            errors = {errors.Status_ID}
+                        />
+                        
+                        <FORM.Input
+                            htmlFor="Boat_Img"
+                            text = "Image URL"
                             type="text" 
-                            name="Boat_Img" value={conformance.js2html["Boat_Img"](watercraft.Boat_Img)} 
+                            name="Boat_Img" 
+                            value= {conformance.js2html["Boat_Img"](watercraft.Boat_Img)}
                             onChange={handleChange}
-                            />
-                            <span className="error">{errors.Boat_Img}</span>
-                        </label>
-                    </div>
+                            errors = {errors.Boat_Img}
+                        />
+                    </FORM.Tray>
 
                       <Action.Tray>
                         <Action.Cancel buttonText="Cancel" showText={true} onClick={handleCancel}></Action.Cancel>
                         <Action.Submit buttonText="Submit" showText={true} onClick={handleSubmit}></Action.Submit>
                       </Action.Tray>
-                        
-                    
-            </div>
+                               
+            </FORM.Container>
        </>
     );
     

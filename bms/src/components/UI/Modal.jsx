@@ -7,7 +7,6 @@ const MODAL = {};
 const useModal  =() => {
     const [showModal, setShowModal] = useState(false);
     const [toDelete, setToDelete] = useState(null);
-    const [selectedButton, setSelectedButton] = useState(null);
     const handleModalClose = () => setShowModal(false);
     const handleModalShow = () => setShowModal(true);
     

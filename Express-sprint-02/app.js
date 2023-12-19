@@ -5,7 +5,6 @@ import boatsRouter from "./routers/boats-router.js";
 import modelsRouter from "./routers/models-router.js";
 import statusRouter from "./routers/status-router.js";
  
-
 //Configure express app with middleware --------------------------------------------------
 const app = appSetup();
 

@@ -1,7 +1,7 @@
 $BorderGrey: LightGrey;
 
-div.watercraftForm {
-    border: 1px solid lightgray;
+div.formContainer {
+    border: 1px solid $BorderGrey;
     border-radius: 3px;
     padding: 20px 20px;
     margin: 0 0 20px 0;
@@ -9,14 +9,6 @@ div.watercraftForm {
     flex-direction: column;
     gap: 25px;
     
-    div.buttonTray{
-        width: 50%;
-        display: flex;
-        gap: 20px;
-        button{
-            width: 100%;
-        }
-    }
     
     div.formTray 
     {
@@ -66,6 +58,5 @@ div.watercraftForm {
         }
 
     }
-
     
 }
