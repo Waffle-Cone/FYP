@@ -5,6 +5,7 @@ import { CardContainer } from '../UI/Card.jsx';
 import { useNavigate } from 'react-router-dom';
 import MODAL from '../UI/Modal.jsx';
 import useLoad from '../API/useLoad.jsx';
+import Action from '../UI/Actions.jsx';
 
 function WaterCraft(){
    
@@ -61,11 +62,14 @@ function WaterCraft(){
         {
             !editMode
             ?
-                <div className="buttonTray">
-                    <button onClick={showForm} >Add Watercraft</button> 
-                    <button onClick={showEditMode} >Edit </button> 
-                </div>
-            :<button onClick={hideEditMode} > Cancel </button>
+                <Action.Tray> 
+                    <Action.Add buttonText="Add" showText={true} onClick={showForm}></Action.Add>
+                    <Action.Modify buttonText="Edit" showText={true} onClick={showEditMode}></Action.Modify>
+                </Action.Tray>
+            :<Action.Tray>
+                 <Action.Cancel buttonText="Cancel" showText={true} onClick={hideEditMode}></Action.Cancel>
+             </Action.Tray>
+           
         }
        
         {
