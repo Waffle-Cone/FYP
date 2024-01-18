@@ -4,6 +4,7 @@ import serverStart from "./serverStart.js";
 import boatsRouter from "./routers/boats-router.js";
 import modelsRouter from "./routers/models-router.js";
 import statusRouter from "./routers/status-router.js";
+import reservationRouter from "./routers/reservation-router.js";
  
 //Configure express app with middleware --------------------------------------------------
 const app = appSetup();
@@ -12,6 +13,7 @@ const app = appSetup();
 app.use('/api/boats',boatsRouter);
 app.use('/api/model',modelsRouter);
 app.use('/api/status',statusRouter);
+app.use('/api/reservations',reservationRouter);
 
 // Start server -----------------------------------------------------------
 serverStart(app);
