@@ -12,6 +12,8 @@ const getBoatController = async (req, res) => {
     LEFT JOIN manufacturers ON models.Manufacturer_ID = manufacturers.Manufacturer_ID
     LEFT JOIN watercrafttypes ON models.Type_ID = watercrafttypes.Type_ID 
     LEFT JOIN boatstatus ON boats.Status_ID = boatstatus.Status_ID`;
+
+    
     var extendedField = ['boats.Synthetic_Key,boats.Registration, boats.Boat_Img, models.Model_Name, manufacturers.Manufacturer_Name, models.Img_URL, watercrafttypes.Type, boatstatus.Status, models.Model_ID, boatstatus.Status_ID'];
 
     // for /boatDetails when id is set 

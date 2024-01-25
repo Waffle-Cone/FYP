@@ -12,6 +12,7 @@ router.get('/',(req,res)=> getBoatController(req,res)); // for all boats
 //app.get('/:id', (req,res)=> getBoatController(req,res,"primary")); // for a specific boat
 router.get('/details/:id', (req,res)=> getBoatController(req,res))
 
+
 router.post('/', FormValidator.validateAddBoatForm(),(req,res)=>addBoatController(req,res));
 router.put('/:id',(req,res)=>putBoatController(req,res))
 router.delete('/:id',(req,res)=>deleteBoatController(req,res))
