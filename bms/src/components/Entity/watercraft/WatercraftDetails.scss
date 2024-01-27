@@ -1,0 +1,54 @@
+div.pageContainer {
+    display: flex;
+    flex-direction: column;
+    gap:5px;
+    div.topBar{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid black;
+        div.titleContainer{
+            div.titleText{
+                display: flex;
+                flex-direction: column;
+                h1, h3{
+                    align-self: center;
+                }
+            }
+        }
+       
+    }
+
+    div.infoContainer{
+        align-self: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 35px;
+        height: 100%;
+        div.leftInfo{
+            width: 1fr;
+            padding:1rem;
+            border-right: 2px solid black;
+            img{
+                width: 500px;
+            }
+        }
+        div.centerInfo{
+            width: 1fr;
+            padding:1rem;
+            border-right: 2px solid black;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+        div.rightInfo{
+            width: 1fr;
+            padding:1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            
+        }
+    }
+}
+

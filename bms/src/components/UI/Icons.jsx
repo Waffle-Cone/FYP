@@ -108,6 +108,14 @@ function Trash() {
   );
 }
 
+function BackArrow() {
+  return (
+    <Icon className="IconBackArrow">
+      <img src="https://img.icons8.com/ios-glyphs/30/circled-left-2.png" alt="Back Arrow" />
+    </Icon>
+  );
+}
+
 function Acknowledge() {
   return (
     <p className="IconAcknowledge">
@@ -133,4 +141,7 @@ Icon.RedCross = RedCross;
 Icon.RedHeart = RedHeart;
 Icon.Tick = Tick;
 Icon.Trash = Trash;
+Icon.BackArrow = BackArrow;
 Icon.Acknowledge = Acknowledge;
+
+

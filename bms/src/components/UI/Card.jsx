@@ -17,10 +17,13 @@ export function Card(props){
     return(
         <>
             <div className='card'> 
-                {props.children}
+                <div onClick={props.handleSelect}>
+                    {props.children}
+                 </div>
                 {
                             !props.editMode
-                            ? null
+                            ? null 
+
                             :<div className="tray">
                             <Action.Tray>
                                 <Action.Modify buttonText="Edit" showText={false} onClick={props.handleEdit}></Action.Modify>

@@ -14,12 +14,13 @@ function WatercraftCard ({watercraft, openModal, editMode}){
     const handleEdit = ()=> {
         navigate('/editWatercraft', {state: {initialWatercraft: watercraft}});
     }
+    const handleSelect = ()=> {navigate('/watercraftDetails',{state: {selectedWatercraft: watercraft}})};
 
     
     // View ----------------------------------------------------------------
     return (
                 <div className="watercraftCard" >
-                    <Card watercraft={watercraft} openModal={openModal} editMode={editMode} handleEdit={handleEdit}> 
+                    <Card watercraft={watercraft} openModal={openModal} editMode={editMode} handleEdit={handleEdit} handleSelect={handleSelect} > 
                         {
                             !watercraft.Boat_Img  // If a custom boat image is specified use it. I f not use the default model one
                             ?<img src={watercraft.Img_URL}/>

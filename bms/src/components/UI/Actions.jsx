@@ -63,6 +63,15 @@ export function Cancel({ onClick, showText = false, buttonText = 'Cancel' }) {
   );
 }
 
+Back.propTypes = ActionPropTypes;
+export function Back({ onClick, showText = false, buttonText = 'Back' }) {
+  return (
+    <Action buttonText={buttonText} onClick={onClick} showText={showText}>
+      <Icon.BackArrow />
+    </Action>
+  );
+};
+
 Collapse.propTypes = ActionPropTypes;
 
 export function Collapse({ onClick, showText = false, buttonText = 'Collapse' }) {
@@ -202,6 +211,7 @@ Action.Tray = Tray;
 Action.Add = Add;
 Action.Cancel = Cancel;
 Action.Close = Close;
+Action.Back = Back;
 Action.Collapse = Collapse;
 Action.Delete = Delete;
 Action.Dismiss = Dismiss;

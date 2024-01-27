@@ -14,14 +14,14 @@ const getBoatController = async (req, res) => {
     LEFT JOIN boatstatus ON boats.Status_ID = boatstatus.Status_ID`;
 
     
-    var extendedField = ['boats.Synthetic_Key,boats.Registration, boats.Boat_Img, models.Model_Name, manufacturers.Manufacturer_Name, models.Img_URL, watercrafttypes.Type, boatstatus.Status, models.Model_ID, boatstatus.Status_ID'];
+    var extendedField = ['boats.Synthetic_Key,boats.Registration, boats.Boat_Img, models.Model_Name, manufacturers.Manufacturer_Name, models.Img_URL,models.Model_Description, models.Weight_Limit_lbs,models.Seating,models.Fuel_Capacity_Gal, watercrafttypes.Type, boatstatus.Status, models.Model_ID, boatstatus.Status_ID'];
 
     // for /boatDetails when id is set 
 
-    if(id != null) {
+    /*if(id != null) {
         
         extendedField = ['boats.Synthetic_Key,boats.Registration, boats.Boat_Img, models.Model_Name, manufacturers.Manufacturer_Name, models.Weight_Limit_lbs,models.Seating,models.Fuel_Capacity_Gal, models.Model_Description,models.Img_URL, watercrafttypes.Type, boatstatus.Status']
-    }
+    }*/
 
     let sql = `SELECT ${extendedField} FROM ${extendedTable}`;
     if(status) {sql += `WHERE boats.Status = ${status}`} // when status is set we use where clause
