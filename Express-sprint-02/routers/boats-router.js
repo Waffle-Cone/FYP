@@ -1,20 +1,27 @@
 import { Router } from "express";
-import getBoatController from "../Controllers/getBoatController.js";
-import addBoatController from "../Controllers/addBoatController.js";
-import putBoatController from "../Controllers/putBoatController.js";
-import deleteBoatController from "../Controllers/deleteBoatController.js";
+import Model from "../models/Model.js";
+import modelConfig from "../models/watercraft-model.js";
+import Accessor from "../accessor/Accessor.js";
+import Controller from "../controller/Controller.js";
 import FormValidator from "../helperFunctions/validation.js";
 
+//model--------------------------------
+const model = new Model(modelConfig);
+
+//Accessor------------------------------
+const accessor = new Accessor(model);
+
+//Controller----------------------------
+const controller = new Controller(accessor);
+
+//router
 const router = new Router();
 
-router.get('/',(req,res)=> getBoatController(req,res)); // for all boats
-//app.get('/status/:id', (req,res)=> getBoatController(req,res,"status")); // for boats with specific status
-//app.get('/:id', (req,res)=> getBoatController(req,res,"primary")); // for a specific boat
-router.get('/details/:id', (req,res)=> getBoatController(req,res))
+router.get("/", (req, res) => controller.get(req, res)); // for all boatss
+router.get("/details/:id", (req, res) => controller.get(req, res));
 
-
-router.post('/', FormValidator.validateAddBoatForm(),(req,res)=>addBoatController(req,res));
-router.put('/:id',(req,res)=>putBoatController(req,res))
-router.delete('/:id',(req,res)=>deleteBoatController(req,res))
+router.post("/", FormValidator.validateAddBoatForm(), (req, res) => controller.post(req, res));
+router.put("/:id", (req, res) => controller.put(req, res));
+router.delete("/:id", (req, res) => controller.delete(req, res));
 
 export default router;

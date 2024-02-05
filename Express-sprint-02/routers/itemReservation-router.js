@@ -1,6 +1,6 @@
 import { Router } from "express";
 import Model from "../models/Model.js";
-import modelConfig from "../models/status-model.js";
+import modelConfig from "../models/itemReservation-model.js";
 import Accessor from "../accessor/Accessor.js";
 import Controller from "../controller/Controller.js";
 
@@ -14,6 +14,6 @@ const accessor = new Accessor(model);
 const controller = new Controller(accessor);
 
 const router = new Router();
-router.get("/", (req, res) => controller.get(req, res));
+router.get("/items/:id", (req, res) => controller.get(req, res));
 
 export default router;
