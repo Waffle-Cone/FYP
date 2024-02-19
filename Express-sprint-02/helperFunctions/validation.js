@@ -19,6 +19,7 @@ const validateAddEmployeeForm = () => {
   return [
     check("Employee_Name").isString(),
     check("Job_ID").isInt(),
+    check("Employee_Img").isString(),
     //check("Start_Date").isDate(),
     //check('Username').isByteLength(10),
     //check('Username').isByteLength(10),
