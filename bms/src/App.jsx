@@ -8,6 +8,7 @@ import WatercraftForm from "./components/entity/watercraft/WatercraftForm.jsx";
 import ModifyWatercraftForm from "./components/Entity/watercraft/ModifyWatercraftForm.jsx";
 import WatercraftDetails from "./components/Entity/watercraft/WatercraftDetails.jsx";
 import Employee from "./components/view/Employee.jsx";
+import EmployeeForm from "./components/Entity/employee/EmployeeForm.jsx";
 
 function App() {
   const loggedInUser = "Admin";
@@ -23,6 +24,7 @@ function App() {
           <Route path="/editWatercraft" element={<ModifyWatercraftForm />} />
           <Route path="/watercraftDetails" element={<WatercraftDetails />} />
           <Route path="/staff" element={<Employee />} />
+          <Route path="/addStaff" element={<EmployeeForm />} />
           <Route path="/*" element={<PageNotFound />} />
         </Routes>
       </Layout>

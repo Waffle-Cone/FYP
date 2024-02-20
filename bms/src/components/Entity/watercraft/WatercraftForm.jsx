@@ -156,7 +156,7 @@ function WatercraftForm({ onSuccess }) {
             htmlFor="Boat_Img"
             text="Image URL"
             type="text"
-            name="Boat_Img"
+            FieldName="Boat_Img"
             value={conformance.js2html["Boat_Img"](watercraft.Boat_Img)}
             onChange={handleChange}
             errors={errors.Boat_Img}
