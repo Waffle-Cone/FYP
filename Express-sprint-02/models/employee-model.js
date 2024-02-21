@@ -1,7 +1,7 @@
 const model = {};
 
 model.table = "employees";
-model.mutableFields = ["Employee_Name", "Job_ID", "Employee_Img"];
+model.mutableFields = ["Employee_Name", "Job_ID", "Employee_Img", "Start_Date"];
 model.idField = "Employee_ID";
 
 model.buildReadQuery = () => {

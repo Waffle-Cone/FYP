@@ -5,6 +5,9 @@ import isURL from "is-url";
 import useLoad from "../../API/useLoad.jsx";
 import Action from "../../UI/Actions";
 import FORM from "../../UI/Form";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Icon from "../../UI/Icons";
 
 const initialEmployee = {
   Employee_Name: null,
@@ -62,7 +65,28 @@ function EmployeeForm({ onSuccess }) {
     navigate("/staff");
   };
 
+  const handleDate = (date) => {
+    console.log(date);
+    const datePicker = new Date(date);
+
+    const year = datePicker.getFullYear();
+    let month = datePicker.getMonth() + 1; // months start at 0
+    let day = datePicker.getDate();
+
+    //phpMyAdmin does not accept dates without leading zeros !!!!
+    if (month < 10) month = `0${month}`;
+    if (day < 10) day = `0${day}`;
+
+    const startDate = `${year}/${month}/${day}`;
+    console.log(startDate);
+
+    const conformedValue = conformance.html2js["Start_Date"](startDate);
+    setEmployee({ ...employee, ["Start_Date"]: conformedValue });
+    setErrors({ ...errors, ["Start_Date"]: isValid["Start_Date"](conformedValue) ? null : errorMessage["Start_Date"] });
+  };
+
   const handleChange = (event) => {
+    console.log(event.target);
     const { name, value } = event.target;
     console.log(name, value);
     const conformedValue = conformance.html2js[name](value);
@@ -93,24 +117,27 @@ function EmployeeForm({ onSuccess }) {
     const check = isVallidEmployee(employee);
     setErrors({ ...errors });
     if (check) {
-      /*
+      //value checks
+      if (employee.Employee_Img === null) employee.Employee_Img = "https://idea7.co.uk/wp-content/uploads/2021/02/placeholder-250x250-1.png"; // default placeholder image
+
       const result = await API.post(postEmployeeEndpoint, employee);
       console.log(result);
       if (result.isSuccess) {
-        alert("Insert success");
+        console.log("Insert success");
         navigate("/staff");
       } else {
-        alert(`Insert NOT Successful: ${result.message}`);
-      }*/
-      console.log("new employee added");
+        console.log(`Insert NOT Successful: ${result.message}`);
+      }
+    } else {
+      console.log("errors found");
     }
   };
 
   //View -----------------------------------------
   return (
     <>
-      <h1 id="title">Add Employee</h1>
       <FORM.Container>
+        <h1 id="title">Add Employee</h1>
         <FORM.Tray>
           <FORM.Input
             htmlFor="Employee_Name"
@@ -135,6 +162,16 @@ function EmployeeForm({ onSuccess }) {
             listText="Job_Name"
             errors={errors.Job_ID}
           />
+
+          <span>
+            <label>Start Date</label>
+
+            <span style={{ display: "flex" }}>
+              <Icon.Calendar />
+              <DatePicker selected={employee.Start_Date} onChange={(date) => handleDate(date)} className="datePicker" dateFormat="dd/MM/yyyy" />
+            </span>
+            <span style={{ color: "red" }}>{errors.Start_Date}</span>
+          </span>
 
           <FORM.Input
             htmlFor="Employee_Img"

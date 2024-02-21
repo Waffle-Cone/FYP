@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
-import './Icons.scss';
+import PropTypes from "prop-types";
+import "./Icons.scss";
 
 export default function Icon({ children }) {
   return <div className="Icon">{children}</div>;
@@ -68,10 +68,7 @@ function Pen() {
 function Plus() {
   return (
     <Icon className="IconPlus">
-      <img
-        src="https://img.icons8.com/external-basicons-line-edtgraphics/50/undefined/external-add-ui-basic-basicons-line-edtgraphics-2.png"
-        alt="Pen icon"
-      />
+      <img src="https://img.icons8.com/external-basicons-line-edtgraphics/50/undefined/external-add-ui-basic-basicons-line-edtgraphics-2.png" alt="Pen icon" />
     </Icon>
   );
 }
@@ -115,6 +112,13 @@ function BackArrow() {
     </Icon>
   );
 }
+function Calendar() {
+  return (
+    <Icon className="calendar">
+      <img src="https://img.icons8.com/ios-glyphs/30/calendar.png" alt="Calendar" />
+    </Icon>
+  );
+}
 
 function Acknowledge() {
   return (
@@ -143,5 +147,4 @@ Icon.Tick = Tick;
 Icon.Trash = Trash;
 Icon.BackArrow = BackArrow;
 Icon.Acknowledge = Acknowledge;
-
-
+Icon.Calendar = Calendar;

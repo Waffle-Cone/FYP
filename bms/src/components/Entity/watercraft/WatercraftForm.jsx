@@ -101,10 +101,10 @@ function WatercraftForm({ onSuccess }) {
       const result = await API.post(postWatercraftEndpoint, watercraft);
       console.log(result);
       if (result.isSuccess) {
-        alert("Insert success");
+        console.log("Insert success");
         navigate("/watercraft");
       } else {
-        alert(`Insert NOT Successful: ${result.message}`);
+        console.log(`Insert NOT Successful: ${result.message}`);
       }
     }
   };

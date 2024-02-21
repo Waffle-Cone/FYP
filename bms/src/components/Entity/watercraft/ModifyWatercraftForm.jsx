@@ -113,7 +113,7 @@ function ModifyWatercraftForm() {
       if (result.isSuccess) {
         navigate("/watercraft");
       } else {
-        alert(`Modify NOT Successful: ${result.message}`);
+        console.log(`Modify NOT Successful: ${result.message}`);
       }
     }
   };
