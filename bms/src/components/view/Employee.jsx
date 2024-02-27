@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import MODAL from "../UI/Modal.jsx";
 import useLoad from "../API/useLoad.jsx";
 import Action from "../UI/Actions.jsx";
+import ListBar from "../UI/ListBar.jsx";
 
 function Employee() {
   //Initialisation ------------------------------------------------------
@@ -52,16 +53,7 @@ function Employee() {
     <>
       {!showModal ? null : MODAL.DeleteConfirm(showModal, handleModalClose, toDelete, handleDelete, "employee")}
 
-      {!editMode ? (
-        <Action.Tray>
-          <Action.Add buttonText="Add" showText={true} onClick={showForm}></Action.Add>
-          <Action.Modify buttonText="Edit" showText={true} onClick={showEditMode}></Action.Modify>
-        </Action.Tray>
-      ) : (
-        <Action.Tray>
-          <Action.Cancel buttonText="Cancel" showText={true} onClick={hideEditMode}></Action.Cancel>
-        </Action.Tray>
-      )}
+      <ListBar editMode={editMode} showForm={showForm} showEditMode={showEditMode} hideEditMode={hideEditMode} />
 
       {!employees ? (
         <p>{loadingMessage}</p>
