@@ -1,6 +1,9 @@
-
 function Home() {
-    return(<h1>Dashboard</h1>);
+  // Initialisations ---------------------
+  // State -------------------------------
+  // Handlers ----------------------------
+  // View --------------------------------
+  return <h1>Dashboard</h1>;
 }
 
 export default Home;

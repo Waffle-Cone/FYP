@@ -1,6 +1,6 @@
 import { useState, useEffect, Button } from "react";
 import API from "../../API/API";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import isURL from "is-url";
 import useLoad from "../../API/useLoad.jsx";
 import Action from "../../UI/Actions";
@@ -16,6 +16,28 @@ const initialWatercraft = {
 function WatercraftForm({ onSuccess }) {
   // Initialisation ------------------------------
   const navigate = useNavigate(); //used to navigate to diffent pages
+  const { state } = useLocation();
+
+  let isModifyForm = false;
+  let selectedID = null;
+  let title = "Add Watercraft to Fleet";
+
+  if (state) {
+    initialWatercraft.Boat_Img = state.initialWatercraft.Boat_Img;
+    initialWatercraft.Registration = state.initialWatercraft.Registration;
+    initialWatercraft.Model_ID = state.initialWatercraft.Model_ID;
+    initialWatercraft.Status_ID = state.initialWatercraft.Status_ID;
+
+    selectedID = state.initialWatercraft.Synthetic_Key; // needed for put later
+    console.log("The selected ID is " + selectedID);
+    title = "Modify Watercraft";
+    isModifyForm = true;
+  } else {
+    initialWatercraft.Boat_Img = null;
+    initialWatercraft.Registration = null;
+    initialWatercraft.Model_ID = 0;
+    initialWatercraft.Status_ID = 0;
+  }
 
   const conformance = {
     html2js: {
@@ -55,6 +77,7 @@ function WatercraftForm({ onSuccess }) {
 
   const modelsEndpoint = "/model";
   const postWatercraftEndpoint = "/boats";
+  const putWatercraftEndpoint = "/boats";
   const statusEndpoint = "/status";
 
   //State ---------------------------------------
@@ -98,7 +121,12 @@ function WatercraftForm({ onSuccess }) {
     const check = isValidWatercraft(watercraft);
     setErrors({ ...errors });
     if (check) {
-      const result = await API.post(postWatercraftEndpoint, watercraft);
+      let result = null;
+      if (isModifyForm) {
+        result = await API.put(`${putWatercraftEndpoint}/${selectedID}`, watercraft);
+      } else {
+        result = await API.post(postWatercraftEndpoint, watercraft);
+      }
       console.log(result);
       if (result.isSuccess) {
         console.log("Insert success");
@@ -112,8 +140,8 @@ function WatercraftForm({ onSuccess }) {
   //View -----------------------------------------
   return (
     <>
-      <h1 id="title">Add a Watercraft to your fleet</h1>
       <FORM.Container>
+        <h1 id="title">{title}</h1>
         <FORM.Tray>
           <FORM.Input
             htmlFor="Registration"

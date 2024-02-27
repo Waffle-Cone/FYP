@@ -1,6 +1,6 @@
 import { useState, useEffect, Button } from "react";
 import API from "../../API/API";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import isURL from "is-url";
 import useLoad from "../../API/useLoad.jsx";
 import Action from "../../UI/Actions";
@@ -21,6 +21,30 @@ const initialEmployee = {
 function EmployeeForm({ onSuccess }) {
   // Initialisation ------------------------------
   const navigate = useNavigate(); //used to navigate to diffent pages
+  const { state } = useLocation();
+
+  //One form for both add and modify
+  let isModifyForm = false;
+  let selectedEmployeeID = null;
+  let title = "Add Employee";
+
+  if (state) {
+    isModifyForm = true;
+    selectedEmployeeID = state.initialEmployee.Employee_ID;
+    title = "Modify Employee";
+    console.log(selectedEmployeeID);
+
+    //set up the initialEmployee object
+    initialEmployee.Employee_Name = state.initialEmployee.Employee_Name;
+    initialEmployee.Job_ID = state.initialEmployee.Job_ID;
+    initialEmployee.Start_Date = state.initialEmployee.Start_Date;
+    initialEmployee.Employee_Img = state.initialEmployee.Employee_Img;
+  } else {
+    initialEmployee.Employee_Name = null;
+    initialEmployee.Job_ID = 0;
+    initialEmployee.Start_Date = null;
+    initialEmployee.Employee_Img = null;
+  }
 
   const conformance = {
     html2js: {
@@ -54,12 +78,14 @@ function EmployeeForm({ onSuccess }) {
 
   const jobsEndpoint = "/jobs";
   const postEmployeeEndpoint = "/employees";
+  const putEmployeeEndpoint = "/employees";
 
   //State ---------------------------------------
   const [employee, setEmployee] = useState(initialEmployee);
   const [jobList, setJobList, loadingJobsMessage, loadJobs] = useLoad(jobsEndpoint);
   const [errors, setErrors] = useState(Object.keys(initialEmployee).reduce((acc, key) => ({ ...acc, [key]: null }), {}));
 
+  console.log(employee);
   //Handlers -------------------------------------
   const handleCancel = () => {
     navigate("/staff");
@@ -120,7 +146,14 @@ function EmployeeForm({ onSuccess }) {
       //value checks
       if (employee.Employee_Img === null) employee.Employee_Img = "https://idea7.co.uk/wp-content/uploads/2021/02/placeholder-250x250-1.png"; // default placeholder image
 
-      const result = await API.post(postEmployeeEndpoint, employee);
+      let result = null;
+
+      if (isModifyForm) {
+        result = await API.put(`${putEmployeeEndpoint}/${selectedEmployeeID}`, employee);
+      } else {
+        result = await API.post(postEmployeeEndpoint, employee);
+      }
+
       console.log(result);
       if (result.isSuccess) {
         console.log("Insert success");
@@ -137,7 +170,7 @@ function EmployeeForm({ onSuccess }) {
   return (
     <>
       <FORM.Container>
-        <h1 id="title">Add Employee</h1>
+        <h1 id="title">{title}</h1>
         <FORM.Tray>
           <FORM.Input
             htmlFor="Employee_Name"

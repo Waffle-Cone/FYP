@@ -51,6 +51,7 @@ function Employee() {
   return (
     <>
       {!showModal ? null : MODAL.DeleteConfirm(showModal, handleModalClose, toDelete, handleDelete, "employee")}
+
       {!editMode ? (
         <Action.Tray>
           <Action.Add buttonText="Add" showText={true} onClick={showForm}></Action.Add>

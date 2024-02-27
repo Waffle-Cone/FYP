@@ -5,7 +5,6 @@ import Login from "./components/view/Login.jsx";
 import PageNotFound from "./components/view/PageNotFound.jsx";
 import WaterCraft from "./components/view/Watercraft.jsx";
 import WatercraftForm from "./components/entity/watercraft/WatercraftForm.jsx";
-import ModifyWatercraftForm from "./components/Entity/watercraft/ModifyWatercraftForm.jsx";
 import WatercraftDetails from "./components/Entity/watercraft/WatercraftDetails.jsx";
 import Employee from "./components/view/Employee.jsx";
 import EmployeeForm from "./components/Entity/employee/EmployeeForm.jsx";
@@ -21,10 +20,11 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/watercraft" element={<WaterCraft />} />
           <Route path="/addWatercraft" element={<WatercraftForm />} />
-          <Route path="/editWatercraft" element={<ModifyWatercraftForm />} />
+          <Route path="/editWatercraft" element={<WatercraftForm />} />
           <Route path="/watercraftDetails" element={<WatercraftDetails />} />
           <Route path="/staff" element={<Employee />} />
           <Route path="/addStaff" element={<EmployeeForm />} />
+          <Route path="/editEmployee" element={<EmployeeForm />} />
           <Route path="/*" element={<PageNotFound />} />
         </Routes>
       </Layout>
