@@ -34,6 +34,8 @@ div.cardContainer {
     &:hover {
       border: 1px solid rgba(0, 0, 0, 0.2);
       transform: translate3D(0, -1px, 0) scale(1.03);
+      box-shadow: 4px 4px 8px rgba(255, 76, 76, 0.8) !important;
+
       p {
         color: rgba(0, 0, 0, 0.8);
       }
