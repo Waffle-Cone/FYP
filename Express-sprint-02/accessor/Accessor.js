@@ -6,13 +6,14 @@ class Accessor {
   }
 
   //methods-----
-  create = async (record) => {
+  create = async (req) => {
     try {
       const sql = this.model.buildInsertSQL();
 
-      const status = await database.query(sql, record);
+      const status = await database.query(sql, req.body);
 
-      const { isSuccess, result, message } = await this.read(status[0].insertId);
+      req.insertID = status[0].insertId;
+      const { isSuccess, result, message } = await this.read(req);
 
       return isSuccess
         ? { isSuccess: true, result: result, message: "Record found" }
@@ -30,10 +31,10 @@ class Accessor {
     }
   };
 
-  read = async (id, status) => {
+  read = async (req) => {
     let result = null;
     try {
-      const sql = this.model.buildReadQuery(id, status);
+      const sql = this.model.buildReadQuery(req);
 
       [result] = await database.query(sql);
       return result.length === 0 ? { isSuccess: false, result: null, message: "No record(s) found" } : { isSuccess: true, result: result, message: "Record(s) found" };

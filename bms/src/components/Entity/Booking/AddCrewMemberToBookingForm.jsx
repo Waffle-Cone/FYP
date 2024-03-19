@@ -1,4 +1,4 @@
-import { useState, useEffect, Button } from "react";
+import { useState, useEffect, Button, useRef } from "react";
 import API from "../../API/API";
 import { useLocation, useNavigate } from "react-router-dom";
 import isURL from "is-url";
@@ -19,80 +19,94 @@ const newEmployeeReservation = {
   BoatReservation_ID: 0,
 };
 
-function AddCrewMemberToBookingForm({ onSuccess }) {
+function AddCrewMemberToBookingForm() {
   // Initialisation ------------------------------
+
+  const title = "Adding Crew Member";
   const navigate = useNavigate(); //used to navigate to diffent pages
   const { state } = useLocation();
+  const bookingID = state.bookingNumber;
 
-  const crewMembers = state.crew;
+  const crew = state.crew;
+  const alreadyCrewIDs = new Set();
+  let crewPresent = true;
 
-  const employeeReservationIDs = new Set();
-  const boatReservationIDs = new Set();
-  console.log(crewMembers);
-
-  let title = "Adding Crew Member";
-
-  initialWatercraft.Boat_Img = null;
-  initialWatercraft.Registration = null;
-  initialWatercraft.Model_ID = 0;
-  initialWatercraft.Status_ID = 0;
+  if (crew.length > 0) {
+    crew.map((member) => {
+      alreadyCrewIDs.add(member.Employee_ID);
+    });
+  } else {
+    crewPresent = false;
+    console.log("No crew");
+  }
 
   const conformance = {
     html2js: {
-      Boat_Img: (value) => (value === "" ? null : value),
-      Registration: (value) => (value === "" ? null : value),
-      Model_ID: (value) => (value == 0 ? null : parseInt(value)),
-      Status_ID: (value) => (value == 0 ? null : parseInt(value)),
+      Employee_ID: (value) => (value == 0 ? null : parseInt(value)),
+      BoatReservation_ID: (value) => (value == 0 ? null : parseInt(value)),
+      EmployeeReservation_ID: (value) => (value == 0 ? null : parseInt(value)),
     },
 
     js2html: {
-      Boat_Img: (value) => (value === null ? "" : value),
-      Registration: (value) => (value === null ? "" : value),
-      Model_ID: (value) => (value === null ? 0 : value),
-      Status_ID: (value) => (value === null ? 0 : value),
+      Employee_ID: (value) => (value === null ? 0 : value),
+      BoatReservation_ID: (value) => (value === null ? 0 : value),
+      EmployeeReservation_ID: (value) => (value === null ? 0 : value),
     },
   };
 
   const isValid = {
-    Boat_Img: (value) => (value === null ? true : isURL(value)),
-    Registration: (value) => {
-      if (value !== null) {
-        return value.length > 0 && value.length < 100;
-      } else {
-        return false;
-      }
-    },
-    Model_ID: (value) => value != 0 || value != "0",
-    Status_ID: (value) => value != 0 || value != "0",
+    Employee_ID: (value) => value != 0 || value != "0",
+    BoatReservation_ID: (value) => value != 0 || value != "0",
+    EmployeeReservation_ID: (value) => value != 0 || value != "0",
   };
 
   const errorMessage = {
-    Boat_Img: "Invalid URL",
-    Registration: "Invalid Registration Number",
-    Model_ID: "No model selected",
-    Status_ID: "No Status selected",
+    Employee_ID: "No Employee Selected",
+    BoatReservation_ID: "No Boat Selected",
+    EmployeeReservation_ID: "Not set",
   };
 
-  const modelsEndpoint = "/model";
-  const postWatercraftEndpoint = "/boats";
-  const putWatercraftEndpoint = "/boats";
-  const statusEndpoint = "/status";
+  const boatreservationEndpoint = `/boatsreservations/booking/${bookingID}`;
+  const postNewCrewMemberEndpoint = "/employeereservations";
+  const allEmployeesEnpoint = `/employees`;
 
   //State ---------------------------------------
-  const [watercraft, setWatercraft] = useState(initialWatercraft);
-  const [modelList, setModelList, loadingModelsMessage, loadModels] = useLoad(modelsEndpoint);
-  const [statusList, setStatusList, loadingStatusMessage, loadStatus] = useLoad(statusEndpoint);
-  const [errors, setErrors] = useState(Object.keys(initialWatercraft).reduce((acc, key) => ({ ...acc, [key]: null }), {}));
+  const [newMember, setNewMember] = useState(newEmployeeReservation);
+  const [boatreservations, setBoatreservations, loadingBoatMessage, loadBoatReservations] = useLoad(boatreservationEndpoint);
+  const [employees, setEmployees, loadingEmployeesMessage, loadEmployees] = useLoad(allEmployeesEnpoint);
+  const [employeeSelections, setEmployeeSelections] = useState([]);
+  const [errors, setErrors] = useState(Object.keys(newEmployeeReservation).reduce((acc, key) => ({ ...acc, [key]: null }), {}));
+
+  useEffect(() => {
+    let updatedEmployees = [];
+    if (crewPresent && employees) {
+      employees.forEach((employee) => {
+        let returnIt = true;
+        alreadyCrewIDs.forEach((crewID) => {
+          if (crewID === employee.Employee_ID) {
+            returnIt = false;
+          }
+        });
+        if (returnIt) {
+          updatedEmployees.push(employee);
+        }
+      });
+      setEmployeeSelections(updatedEmployees);
+    } else {
+      setEmployeeSelections(employees);
+    }
+  }, [employees]);
 
   //Handlers -------------------------------------
   const handleCancel = () => {
-    navigate("/watercraft");
+    navigate(-1);
   };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     const conformedValue = conformance.html2js[name](value);
-    setWatercraft({ ...watercraft, [name]: conformedValue });
+    console.log(conformedValue);
+    setNewMember({ ...newMember, [name]: conformedValue });
     setErrors({ ...errors, [name]: isValid[name](conformedValue) ? null : errorMessage[name] });
   };
 
@@ -100,32 +114,53 @@ function AddCrewMemberToBookingForm({ onSuccess }) {
     setErrors(errors);
   }, [errors]); // I NEED THIS == without it all the error message are one step behind
 
-  const isValidWatercraft = (watercraft) => {
-    let isWatercraftValid = true;
-    Object.keys(watercraft).forEach((key) => {
+  useEffect(() => {
+    setNewMember(newMember);
+  }, [newMember]); // I NEED THIS == without it all the error message are one step behind
+
+  const isValidMemberValid = (crewMember) => {
+    let isValidMemberValid = true;
+    Object.keys(newMember).forEach((key) => {
       // we do this becasue setErrors is asychronous thus we cannot determine its stte when we need to go through it
-      if (isValid[key](watercraft[key])) {
+      if (isValid[key](newMember[key])) {
         errors[key] = null;
       } else {
         errors[key] = errorMessage[key];
-        isWatercraftValid = false;
+        isValidMemberValid = false;
       }
     });
-    return isWatercraftValid;
+    return isValidMemberValid;
+  };
+
+  const getEmployeeReservationNumber = () => {
+    const selectedBoatReservationID = newMember.BoatReservation_ID;
+    const employeeReservationNumber = crew.find((member) => member.BoatReservation_ID === selectedBoatReservationID).EmployeeReservation_ID;
+    console.log(employeeReservationNumber);
+    return employeeReservationNumber;
   };
 
   const handleSubmit = async () => {
-    const check = isValidWatercraft(watercraft);
+    if (crewPresent) {
+      const selectedEmployeeReservationID = getEmployeeReservationNumber();
+      setNewMember({ ...newMember, ["EmployeeReservation_ID"]: selectedEmployeeReservationID });
+      newMember.EmployeeReservation_ID = selectedEmployeeReservationID;
+    } else {
+      const randomNumber = Math.floor(Math.random() * 10000) + 1;
+      setNewMember({ ...newMember, ["EmployeeReservation_ID"]: randomNumber });
+    }
+
+    const check = isValidMemberValid(newMember);
     setErrors({ ...errors });
+    console.log(errors);
     if (check) {
       let result = null;
-
-      result = await API.post(postWatercraftEndpoint, watercraft);
+      console.log(newMember);
+      result = await API.post(postNewCrewMemberEndpoint, newMember);
 
       console.log(result);
       if (result.isSuccess) {
         console.log("Insert success");
-        navigate("/watercraft");
+        navigate(-1);
       } else {
         console.log(`Insert NOT Successful: ${result.message}`);
       }
@@ -137,8 +172,34 @@ function AddCrewMemberToBookingForm({ onSuccess }) {
     <>
       <FORM.Container>
         <h1 id="title">{title}</h1>
-        <FORM.Tray></FORM.Tray>
-
+        <FORM.Tray>
+          <FORM.Select
+            htmlFor="Employee_ID"
+            text="Select new Crew Memeber"
+            list={employeeSelections}
+            loadingMessage={loadingEmployeesMessage}
+            name="Employee_ID"
+            conformance={conformance.js2html["Employee_ID"](newMember.Employee_ID)}
+            onChange={handleChange}
+            listKey="Employee_ID"
+            listValue="Employee_ID"
+            listText="Employee_Name"
+            errors={errors.Employee_ID}
+          />
+          <FORM.Select
+            htmlFor="BoatReservation_ID"
+            text="Select Boat to Join"
+            list={boatreservations}
+            loadingMessage={loadingBoatMessage}
+            name="BoatReservation_ID"
+            conformance={conformance.js2html["BoatReservation_ID"](newMember.BoatReservation_ID)}
+            onChange={handleChange}
+            listKey="Boatreservation_ID"
+            listValue="Boatreservation_ID"
+            listText="Model_Name"
+            errors={errors.BoatReservation_ID}
+          />
+        </FORM.Tray>
         <Action.Tray>
           <Action.Cancel buttonText="Cancel" showText={true} onClick={handleCancel}></Action.Cancel>
           <Action.Submit buttonText="Submit" showText={true} onClick={handleSubmit}></Action.Submit>

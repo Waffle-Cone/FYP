@@ -4,7 +4,10 @@ model.table = "boats";
 model.mutableFields = ["Boat_Img", "Registration", "Model_ID", "Status_ID"];
 model.idField = "Synthetic_Key";
 
-model.buildReadQuery = (id, status) => {
+model.buildReadQuery = (req) => {
+  const status = req.params.status;
+  const id = req.params.id;
+
   //normal /boats
   const extendedTable = `${model.table} LEFT JOIN models ON boats.Model_ID = models.Model_ID
       LEFT JOIN manufacturers ON models.Manufacturer_ID = manufacturers.Manufacturer_ID
@@ -28,6 +31,11 @@ model.buildReadQuery = (id, status) => {
     sql += ` WHERE boats.Synthetic_key = ${id}`;
     console.log("id unlocked");
   }
+  /*
+  if (insertID !== undefined) {
+    sql += ` WHERE boats.Synthetic_key = ${insertID}`;
+    console.log("insertID unlocked");
+  }*/
 
   return sql;
 };

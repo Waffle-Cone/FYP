@@ -2,9 +2,12 @@ const model = {};
 
 model.table = "employeereservation";
 model.mutableFields = ["Employee_ID", "EmployeeReservation_ID", "BoatReservation_ID"];
-model.idField = "Booking_Number";
+model.idField = "Synthetic_key";
 
-model.buildReadQuery = (id) => {
+model.buildReadQuery = (req) => {
+  const id = req.params.id;
+  const boatReservation = req.params.boatreservation;
+
   const extendedTable = `${model.table} LEFT JOIN employees ON employeereservation.Employee_ID = employees.Employee_ID 
   LEFT JOIN jobs ON employees.Job_ID = jobs.Job_ID
   LEFT JOIN boatReservation ON employeereservation.BoatReservation_ID = boatReservation.BoatReservation_ID 
@@ -17,6 +20,12 @@ model.buildReadQuery = (id) => {
   ];
 
   let sql = `SELECT ${extendedField} FROM ${extendedTable}`;
+
+  if (boatReservation !== undefined) {
+    console.log(boatReservation);
+    sql += ` WHERE employeereservation.BoatReservation_ID  = ${boatReservation}`;
+    console.log("boatReservation unlocked");
+  }
 
   if (id !== undefined) {
     console.log(id);

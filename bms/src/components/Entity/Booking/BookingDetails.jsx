@@ -22,11 +22,11 @@ const BookingDetails = () => {
   const crewMembers = `/employeereservations/${selectedBooking.Booking_Number}`;
   // State ---------------------------------------------------------------
   const [crew, setCrewMembers, loadingCrewMessage, loadCrew] = useLoad(crewMembers);
-  console.log(crew);
+
   // Handlers-------------------------------------------------------------
   const handleBack = () => navigate(-1);
   const handleAdd = () => {
-    navigate("/addCrewMember", { state: { crew } });
+    navigate("/addCrewMember", { state: { bookingNumber: selectedBooking.Booking_Number, crew } });
   };
   // View ----------------------------------------------------------------
 

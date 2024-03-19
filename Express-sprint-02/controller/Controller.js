@@ -8,11 +8,8 @@ class Controller {
 
   //methods----------------------------------------------------------------
   get = async (req, res) => {
-    const status = req.params.status;
-    const id = req.params.id;
-
     // EXECUTE SQL
-    const { isSuccess, result, message } = await this.accessor.read(id, status);
+    const { isSuccess, result, message } = await this.accessor.read(req);
 
     // RESPONSES
     responseSetting(res, "GET", result, message, isSuccess); // sets up the res.json for me
@@ -27,7 +24,7 @@ class Controller {
       console.log(req.body);
 
       //access data
-      const { isSuccess, result, message: accessorMessage } = await this.accessor.create(req.body);
+      const { isSuccess, result, message: accessorMessage } = await this.accessor.create(req);
       responseSetting(res, "POST", result, accessorMessage, isSuccess);
     }
   };

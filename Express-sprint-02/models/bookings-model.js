@@ -4,7 +4,9 @@ model.table = "bookings";
 model.mutableFields = ["Booking_Notes,Date,Duration,Charter_Type_ID"];
 model.idField = "bookings.Booking_Number";
 
-model.buildReadQuery = (id) => {
+model.buildReadQuery = (req) => {
+  const id = req.params.id;
+
   const extendedTable = `${model.table} RIGHT JOIN chartertype ON bookings.Charter_Type_ID = chartertype.Charter_Type_ID`;
 
   let extendedField = ["bookings.Booking_Number,bookings.Booking_Notes, bookings.BookingDate, bookings.Duration,chartertype.Charter_Name"];

@@ -4,7 +4,9 @@ model.table = "employees";
 model.mutableFields = ["Employee_Name", "Job_ID", "Employee_Img", "Start_Date"];
 model.idField = "Employee_ID";
 
-model.buildReadQuery = (id) => {
+model.buildReadQuery = (req) => {
+  const id = req.params.id;
+
   const extendedTable = `${model.table} LEFT JOIN employeeStatus ON employees.Employee_Status_ID = employeeStatus.Employee_Status_ID
   LEFT JOIN jobs ON employees.Job_ID = jobs.Job_ID`;
 

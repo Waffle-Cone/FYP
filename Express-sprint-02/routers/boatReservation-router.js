@@ -15,5 +15,6 @@ const controller = new Controller(accessor);
 const router = new Router();
 router.get("/", (req, res) => controller.get(req, res));
 router.get("/:id", (req, res) => controller.get(req, res));
+router.get("/booking/:bookingNumber", (req, res) => controller.get(req, res));
 
 export default router;
