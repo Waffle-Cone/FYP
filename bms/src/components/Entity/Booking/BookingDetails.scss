@@ -1,0 +1,16 @@
+div.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid black;
+  div.titleContainer {
+    div.titleText {
+      display: flex;
+      flex-direction: column;
+      h1,
+      h3 {
+        align-self: center;
+      }
+    }
+  }
+}

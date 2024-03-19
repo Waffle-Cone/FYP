@@ -1,0 +1,32 @@
+div.bookingCardContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  button.bookingCard {
+    background-color: white;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    box-shadow: 4px 4px 8px lightseagreen;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    span.layout {
+      width: 100%;
+      display: flex;
+      gap: 30px;
+    }
+
+    &:hover {
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      transform: translate3D(0, -1px, 0) scale(1.01);
+      box-shadow: 4px 4px 8px rgba(255, 76, 76, 0.8) !important;
+
+      p {
+        color: rgba(0, 0, 0, 0.8);
+      }
+    }
+  }
+}

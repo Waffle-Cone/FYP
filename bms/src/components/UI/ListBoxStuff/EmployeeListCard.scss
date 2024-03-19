@@ -1,0 +1,32 @@
+div.container {
+  display: flex;
+  gap: 20px;
+  padding: 5px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  background-color: whitesmoke;
+  box-shadow: 1px 1px 3px lightseagreen;
+
+  p#boat {
+    margin-left: auto;
+  }
+
+  p#job {
+    color: rgba(0, 0, 0, 0.3);
+    font-size: 12px;
+    align-self: center;
+  }
+  p#name {
+    margin-left: auto;
+  }
+
+  &:hover {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    transform: translate3D(0, -1px, 0) scale(1.03);
+    box-shadow: 4px 4px 8px rgba(255, 76, 76, 0.8) !important;
+
+    p {
+      color: rgba(0, 0, 0, 0.8);
+    }
+  }
+}
