@@ -11,6 +11,7 @@ import EmployeeForm from "./components/Entity/employee/EmployeeForm.jsx";
 import Bookings from "./components/view/Bookings.jsx";
 import BookingDetails from "./components/Entity/Booking/BookingDetails.jsx";
 import AddCrewMemberToBookingForm from "./components/Entity/Booking/AddCrewMemberToBookingForm.jsx";
+import BookingForm from "./components/Entity/Booking/BookingForm.jsx";
 
 function App() {
   const loggedInUser = "Admin";
@@ -29,6 +30,7 @@ function App() {
           <Route path="/addStaff" element={<EmployeeForm />} />
           <Route path="/editEmployee" element={<EmployeeForm />} />
           <Route path="/bookings" element={<Bookings />} />
+          <Route path="/addBooking" element={<BookingForm />} />
           <Route path="/bookingDetails" element={<BookingDetails />} />
           <Route path="/addCrewMember" element={<AddCrewMemberToBookingForm />} />
           <Route path="/*" element={<PageNotFound />} />

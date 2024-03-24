@@ -3,4 +3,12 @@ div.cardLabel {
   align-items: baseline;
   gap: 5px;
   margin: auto;
+
+  h5 {
+    font-size: 15px;
+    color: rgb(127, 127, 127);
+  }
+  p {
+    font-size: small;
+  }
 }

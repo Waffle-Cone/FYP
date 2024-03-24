@@ -5,6 +5,7 @@ import { check } from "express-validator";
 const FormValidator = {};
 FormValidator.validateAddBoatForm = () => validateAddBoatForm();
 FormValidator.validateAddEmployeeForm = () => validateAddEmployeeForm();
+FormValidator.validateAddBookingForm = () => validateAddBookingForm();
 
 const validateAddBoatForm = () => {
   return [
@@ -24,6 +25,10 @@ const validateAddEmployeeForm = () => {
     //check('Username').isByteLength(10),
     //check('Username').isByteLength(10),
   ];
+};
+
+const validateAddBookingForm = () => {
+  return [check("Booking_Notes").isString()];
 };
 
 export default FormValidator;

@@ -4,11 +4,12 @@ div.bookingCardContainer {
   gap: 20px;
 
   button.bookingCard {
-    background-color: white;
+    // background-color: white;
+    background-color: rgb(245, 239, 239);
     border: 1px solid lightgray;
     border-radius: 5px;
     box-shadow: 4px 4px 8px lightseagreen;
-    padding: 10px;
+    padding: 20px;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
