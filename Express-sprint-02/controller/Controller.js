@@ -36,11 +36,8 @@ class Controller {
       console.log(errors);
     } else {
       console.log(req.body);
-      const id = req.params.id;
-      const record = req.body;
-
       //access data
-      const { isSuccess, result, message: accessorMessage } = await this.accessor.update(id, record);
+      const { isSuccess, result, message: accessorMessage } = await this.accessor.update(req);
       responseSetting(res, "PUT", result, accessorMessage, isSuccess);
     }
   };

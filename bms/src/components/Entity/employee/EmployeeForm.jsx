@@ -8,6 +8,11 @@ import FORM from "../../UI/Form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Icon from "../../UI/Icons";
+import Conformance from "../../util/Conformance";
+import SetInitial from "../../util/SetInitial";
+import IsInputValid from "../../util/IsInputValid";
+import FormInputErrorMessages from "../../util/FormInputErrorMessages";
+import { employeeEndpoints } from "../../util/FormEndpoints";
 
 const initialEmployee = {
   Employee_Name: null,
@@ -23,73 +28,13 @@ function EmployeeForm({ onSuccess }) {
   const navigate = useNavigate(); //used to navigate to diffent pages
   const { state } = useLocation();
 
-  //One form for both add and modify
-  let isModifyForm = false;
-  let selectedEmployeeID = null;
-  let title = "Add Employee";
-
-  if (state) {
-    isModifyForm = true;
-    selectedEmployeeID = state.initialEmployee.Employee_ID;
-    title = "Modify Employee";
-    console.log(selectedEmployeeID);
-
-    //set up the initialEmployee object
-    initialEmployee.Employee_Name = state.initialEmployee.Employee_Name;
-    initialEmployee.Job_ID = state.initialEmployee.Job_ID;
-    initialEmployee.Start_Date = state.initialEmployee.Start_Date;
-    initialEmployee.Employee_Img = state.initialEmployee.Employee_Img;
-  } else {
-    initialEmployee.Employee_Name = null;
-    initialEmployee.Job_ID = 0;
-    initialEmployee.Start_Date = null;
-    initialEmployee.Employee_Img = null;
-  }
-
-  const conformance = {
-    html2js: {
-      Employee_Name: (value) => (value === "" ? null : value),
-      Job_ID: (value) => (value == 0 ? null : parseInt(value)),
-      Start_Date: (value) => (value === "" ? null : value),
-      Employee_Img: (value) => (value === "" ? null : value),
-    },
-
-    js2html: {
-      Employee_Name: (value) => (value === null ? "" : value),
-      Job_ID: (value) => (value === null ? 0 : value),
-      Start_Date: (value) => (value === null ? "" : value),
-      Employee_Img: (value) => (value === null ? "" : value),
-    },
-  };
-
-  const isValid = {
-    Employee_Name: (value) => value !== null && value !== undefined,
-    Job_ID: (value) => value != 0 || (value != "0" && value != null),
-    Start_Date: (value) => value !== null && value !== undefined,
-    Employee_Img: (value) => (value === null ? true : isURL(value)),
-  };
-
-  const errorMessage = {
-    Employee_Name: "Enter Name",
-    Job_ID: "No job selected",
-    Start_Date: "No start date selected",
-    Employee_Img: "Invalid URL",
-  };
-
-  const jobsEndpoint = "/jobs";
-  const postEmployeeEndpoint = "/employees";
-  const putEmployeeEndpoint = "/employees";
-
+  const [theEmployee, selectedEmployeeID, title, isModifyForm] = SetInitial.employee(initialEmployee, state);
   //State ---------------------------------------
-  const [employee, setEmployee] = useState(initialEmployee);
-  const [jobList, setJobList, loadingJobsMessage, loadJobs] = useLoad(jobsEndpoint);
-  const [errors, setErrors] = useState(Object.keys(initialEmployee).reduce((acc, key) => ({ ...acc, [key]: null }), {}));
+  const [employee, setEmployee] = useState(theEmployee);
+  const [jobList, setJobList, loadingJobsMessage, loadJobs] = useLoad(employeeEndpoints.jobsEndpoint);
+  const [errors, setErrors] = useState(Object.keys(employee).reduce((acc, key) => ({ ...acc, [key]: null }), {}));
 
-  console.log(employee);
   //Handlers -------------------------------------
-  const handleCancel = () => {
-    navigate("/staff");
-  };
 
   const handleDate = (date) => {
     console.log(date);
@@ -106,41 +51,30 @@ function EmployeeForm({ onSuccess }) {
     const startDate = `${year}/${month}/${day}`;
     console.log(startDate);
 
-    const conformedValue = conformance.html2js["Start_Date"](startDate);
+    const conformedValue = Conformance.employee.html2js["Start_Date"](startDate);
     setEmployee({ ...employee, ["Start_Date"]: conformedValue });
-    setErrors({ ...errors, ["Start_Date"]: isValid["Start_Date"](conformedValue) ? null : errorMessage["Start_Date"] });
+    setErrors({ ...errors, ["Start_Date"]: IsInputValid.employee["Start_Date"](conformedValue) ? null : FormInputErrorMessages.employee["Start_Date"] });
   };
 
   const handleChange = (event) => {
     console.log(event.target);
     const { name, value } = event.target;
     console.log(name, value);
-    const conformedValue = conformance.html2js[name](value);
+    const conformedValue = Conformance.employee.html2js[name](value);
     setEmployee({ ...employee, [name]: conformedValue });
-    setErrors({ ...errors, [name]: isValid[name](conformedValue) ? null : errorMessage[name] });
+    setErrors({ ...errors, [name]: IsInputValid.employee[name](conformedValue) ? null : FormInputErrorMessages.employee[name] });
   };
 
   useEffect(() => {
     setErrors(errors);
   }, [errors]); // I NEED THIS == without it all the error message are one step behind
 
-  const isVallidEmployee = (employee) => {
-    let isEmployeeValid = true;
-    Object.keys(employee).forEach((key) => {
-      console.log(`${employee[key]} ${isValid[key](employee[key])}`);
-      // we do this becasue setErrors is asychronous thus we cannot determine its stte when we need to go through it
-      if (isValid[key](employee[key])) {
-        errors[key] = null;
-      } else {
-        errors[key] = errorMessage[key];
-        isEmployeeValid = false;
-      }
-    });
-    return isEmployeeValid;
+  const handleCancel = () => {
+    navigate("/staff");
   };
 
   const handleSubmit = async () => {
-    const check = isVallidEmployee(employee);
+    const check = IsInputValid.isValid(employee, IsInputValid.employee, errors, FormInputErrorMessages.employee);
     setErrors({ ...errors });
     if (check) {
       //value checks
@@ -149,9 +83,9 @@ function EmployeeForm({ onSuccess }) {
       let result = null;
 
       if (isModifyForm) {
-        result = await API.put(`${putEmployeeEndpoint}/${selectedEmployeeID}`, employee);
+        result = await API.put(`${employeeEndpoints.putEmployeeEndpoint}/${selectedEmployeeID}`, employee);
       } else {
-        result = await API.post(postEmployeeEndpoint, employee);
+        result = await API.post(employeeEndpoints.postEmployeeEndpoint, employee);
       }
 
       console.log(result);
@@ -177,7 +111,7 @@ function EmployeeForm({ onSuccess }) {
             text="First and Last Name"
             type="text"
             FieldName="Employee_Name"
-            conformance={conformance.js2html["Employee_Name"](employee.Employee_Name)}
+            conformance={Conformance.employee.js2html["Employee_Name"](employee.Employee_Name)}
             onChange={handleChange}
             errors={errors.Employee_Name}
           />
@@ -188,7 +122,7 @@ function EmployeeForm({ onSuccess }) {
             list={jobList}
             loadingMessage={loadingJobsMessage}
             name="Job_ID"
-            conformance={conformance.js2html["Job_ID"](employee.Job_ID)}
+            conformance={Conformance.employee.js2html["Job_ID"](employee.Job_ID)}
             onChange={handleChange}
             listKey="Job_ID"
             listValue="Job_ID"
@@ -211,7 +145,7 @@ function EmployeeForm({ onSuccess }) {
             text="Image URL"
             type="text"
             FieldName="Employee_Img"
-            value={conformance.js2html["Employee_Img"](employee.Employee_Img)}
+            value={Conformance.employee.js2html["Employee_Img"](employee.Employee_Img)}
             onChange={handleChange}
             errors={errors.Employee_Img}
           />

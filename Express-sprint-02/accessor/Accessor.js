@@ -47,14 +47,16 @@ class Accessor {
     }
   };
 
-  update = async (id, record) => {
+  update = async (req) => {
+    const id = req.params.id;
+    const record = req.body;
     try {
       const { sql, data } = this.model.buildUpdateSQL(id, record);
       const status = await database.query(sql, data);
 
       if (status[0].affectedRows === 0) return { isSuccess: false, result: null, message: `Failed to update record: no rows affected` };
 
-      const { isSuccess, result, message } = await this.read(id);
+      const { isSuccess, result, message } = await this.read(req);
 
       return isSuccess
         ? { isSuccess: true, result: result, message: "Record found" }

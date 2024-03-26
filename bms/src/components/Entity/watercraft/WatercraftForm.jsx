@@ -1,10 +1,14 @@
 import { useState, useEffect, Button } from "react";
 import API from "../../API/API";
 import { useLocation, useNavigate } from "react-router-dom";
-import isURL from "is-url";
 import useLoad from "../../API/useLoad.jsx";
 import Action from "../../UI/Actions";
 import FORM from "../../UI/Form";
+import Conformance from "../../util/Conformance";
+import SetInitial from "../../util/SetInitial";
+import IsInputValid from "../../util/IsInputValid";
+import FormInputErrorMessages from "../../util/FormInputErrorMessages";
+import { watercraftEndpoints } from "../../util/FormEndpoints";
 
 const initialWatercraft = {
   Boat_Img: null,
@@ -18,114 +22,41 @@ function WatercraftForm({ onSuccess }) {
   const navigate = useNavigate(); //used to navigate to diffent pages
   const { state } = useLocation();
 
-  let isModifyForm = false;
-  let selectedID = null;
-  let title = "Add Watercraft to Fleet";
-
-  if (state) {
-    initialWatercraft.Boat_Img = state.initialWatercraft.Boat_Img;
-    initialWatercraft.Registration = state.initialWatercraft.Registration;
-    initialWatercraft.Model_ID = state.initialWatercraft.Model_ID;
-    initialWatercraft.Status_ID = state.initialWatercraft.Status_ID;
-
-    selectedID = state.initialWatercraft.Synthetic_Key; // needed for put later
-    console.log("The selected ID is " + selectedID);
-    title = "Modify Watercraft";
-    isModifyForm = true;
-  } else {
-    initialWatercraft.Boat_Img = null;
-    initialWatercraft.Registration = null;
-    initialWatercraft.Model_ID = 0;
-    initialWatercraft.Status_ID = 0;
-  }
-
-  const conformance = {
-    html2js: {
-      Boat_Img: (value) => (value === "" ? null : value),
-      Registration: (value) => (value === "" ? null : value),
-      Model_ID: (value) => (value == 0 ? null : parseInt(value)),
-      Status_ID: (value) => (value == 0 ? null : parseInt(value)),
-    },
-
-    js2html: {
-      Boat_Img: (value) => (value === null ? "" : value),
-      Registration: (value) => (value === null ? "" : value),
-      Model_ID: (value) => (value === null ? 0 : value),
-      Status_ID: (value) => (value === null ? 0 : value),
-    },
-  };
-
-  const isValid = {
-    Boat_Img: (value) => (value === null ? true : isURL(value)),
-    Registration: (value) => {
-      if (value !== null) {
-        return value.length > 0 && value.length < 100;
-      } else {
-        return false;
-      }
-    },
-    Model_ID: (value) => value != 0 || value != "0",
-    Status_ID: (value) => value != 0 || value != "0",
-  };
-
-  const errorMessage = {
-    Boat_Img: "Invalid URL",
-    Registration: "Invalid Registration Number",
-    Model_ID: "No model selected",
-    Status_ID: "No Status selected",
-  };
-
-  const modelsEndpoint = "/model";
-  const postWatercraftEndpoint = "/boats";
-  const putWatercraftEndpoint = "/boats";
-  const statusEndpoint = "/status";
+  const [theWatercraft, selectedID, title, isModifyForm] = SetInitial.watercraft(initialWatercraft, state);
 
   //State ---------------------------------------
-  const [watercraft, setWatercraft] = useState(initialWatercraft);
-  const [modelList, setModelList, loadingModelsMessage, loadModels] = useLoad(modelsEndpoint);
-  const [statusList, setStatusList, loadingStatusMessage, loadStatus] = useLoad(statusEndpoint);
-  const [errors, setErrors] = useState(Object.keys(initialWatercraft).reduce((acc, key) => ({ ...acc, [key]: null }), {}));
+  const [watercraft, setWatercraft] = useState(theWatercraft);
+  const [modelList, setModelList, loadingModelsMessage, loadModels] = useLoad(watercraftEndpoints.modelsEndpoint);
+  const [statusList, setStatusList, loadingStatusMessage, loadStatus] = useLoad(watercraftEndpoints.statusEndpoint);
+  const [errors, setErrors] = useState(Object.keys(watercraft).reduce((acc, key) => ({ ...acc, [key]: null }), {}));
 
   //Handlers -------------------------------------
-  const handleCancel = () => {
-    navigate("/watercraft");
-  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    const conformedValue = conformance.html2js[name](value);
+    const conformedValue = Conformance.watercraft.html2js[name](value);
     setWatercraft({ ...watercraft, [name]: conformedValue });
-    setErrors({ ...errors, [name]: isValid[name](conformedValue) ? null : errorMessage[name] });
+    setErrors({ ...errors, [name]: IsInputValid.watercraft[name](conformedValue) ? null : FormInputErrorMessages.watercraft[name] });
   };
 
   useEffect(() => {
     setErrors(errors);
   }, [errors]); // I NEED THIS == without it all the error message are one step behind
 
-  const isValidWatercraft = (watercraft) => {
-    let isWatercraftValid = true;
-    Object.keys(watercraft).forEach((key) => {
-      // we do this becasue setErrors is asychronous thus we cannot determine its stte when we need to go through it
-      if (isValid[key](watercraft[key])) {
-        errors[key] = null;
-      } else {
-        errors[key] = errorMessage[key];
-        isWatercraftValid = false;
-      }
-    });
-    return isWatercraftValid;
+  const handleCancel = () => {
+    navigate("/watercraft");
   };
 
   const handleSubmit = async () => {
     //console.log(`watercraft=[${JSON.stringify(watercraft)}]`);
-    const check = isValidWatercraft(watercraft);
+    const check = IsInputValid.isValid(watercraft, IsInputValid.watercraft, errors, FormInputErrorMessages.watercraft);
     setErrors({ ...errors });
     if (check) {
       let result = null;
       if (isModifyForm) {
-        result = await API.put(`${putWatercraftEndpoint}/${selectedID}`, watercraft);
+        result = await API.put(`${watercraftEndpoints.putWatercraftEndpoint}/${selectedID}`, watercraft);
       } else {
-        result = await API.post(postWatercraftEndpoint, watercraft);
+        result = await API.post(watercraftEndpoints.postWatercraftEndpoint, watercraft);
       }
       console.log(result);
       if (result.isSuccess) {
@@ -148,7 +79,7 @@ function WatercraftForm({ onSuccess }) {
             text="Registration Number"
             type="text"
             FieldName="Registration"
-            conformance={conformance.js2html["Registration"](watercraft.Registration)}
+            conformance={Conformance.watercraft.js2html["Registration"](watercraft.Registration)}
             onChange={handleChange}
             errors={errors.Registration}
           />
@@ -158,7 +89,7 @@ function WatercraftForm({ onSuccess }) {
             list={modelList}
             loadingMessage={loadingModelsMessage}
             name="Model_ID"
-            conformance={conformance.js2html["Model_ID"](watercraft.Model_ID)}
+            conformance={Conformance.watercraft.js2html["Model_ID"](watercraft.Model_ID)}
             onChange={handleChange}
             listKey="Model_ID"
             listValue="Model_ID"
@@ -172,7 +103,7 @@ function WatercraftForm({ onSuccess }) {
             list={statusList}
             loadingMessage={loadingStatusMessage}
             name="Status_ID"
-            conformance={conformance.js2html["Status_ID"](watercraft.Status_ID)}
+            conformance={Conformance.watercraft.js2html["Status_ID"](watercraft.Status_ID)}
             onChange={handleChange}
             listKey="Status_ID"
             listValue="Status_ID"
@@ -185,7 +116,7 @@ function WatercraftForm({ onSuccess }) {
             text="Image URL"
             type="text"
             FieldName="Boat_Img"
-            value={conformance.js2html["Boat_Img"](watercraft.Boat_Img)}
+            value={Conformance.watercraft.js2html["Boat_Img"](watercraft.Boat_Img)}
             onChange={handleChange}
             errors={errors.Boat_Img}
           />
