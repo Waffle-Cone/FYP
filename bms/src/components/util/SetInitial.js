@@ -50,6 +50,52 @@ const employee = (initialEmployee, state) => {
   return [initialEmployee, selectedEmployeeID, title, isModifyForm];
 };
 
+const booking = (intialBooking, state) => {
+  let isModifyForm = false;
+  let selectedBookingNumber = null;
+  let title = "Add Booking";
+
+  if (state) {
+    isModifyForm = true;
+    selectedBookingNumber = state.intialBooking.Booking_Number;
+    title = "Modify Booking";
+    console.log(selectedBookingNumber);
+
+    //set up the intialBooking object
+    intialBooking.Booking_Notes = state.intialBooking.Booking_Notes;
+    intialBooking.BookingDate = state.intialBooking.BookingDate;
+    intialBooking.Duration = state.intialBooking.Duration;
+    intialBooking.Charter_Type_ID = state.intialBooking.Charter_Type_ID;
+  } else {
+    intialBooking.Booking_Notes = null;
+    intialBooking.BookingDate = null;
+    intialBooking.Duration = null;
+    intialBooking.Charter_Type_ID = 0;
+  }
+
+  return [intialBooking, selectedBookingNumber, title, isModifyForm];
+};
+
+const addCrewMember = (initialEmployeeReservation, state) => {
+  const title = "Add EMployee to Crew";
+  const bookingID = state.bookingNumber;
+  const crew = state.crew;
+  const alreadyCrewIDs = new Set();
+  let crewPresent = true;
+
+  if (crew && crew.length > 0) {
+    crew.map((member) => {
+      alreadyCrewIDs.add(member.Employee_ID);
+    });
+  } else {
+    crewPresent = false;
+    console.log("No crew");
+  }
+  return [title, bookingID, crewPresent, crew, alreadyCrewIDs];
+};
+
 SetInitial.employee = (initialEmployee, state) => employee(initialEmployee, state);
 SetInitial.watercraft = (initialWatercraft, state) => watercraft(initialWatercraft, state);
+SetInitial.booking = (intialBooking, state) => booking(intialBooking, state);
+SetInitial.addCrewMember = (initialEmployeeReservation, state) => addCrewMember(initialEmployeeReservation, state);
 export default SetInitial;

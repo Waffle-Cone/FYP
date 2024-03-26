@@ -5,13 +5,11 @@ import isURL from "is-url";
 import useLoad from "../../API/useLoad.jsx";
 import Action from "../../UI/Actions";
 import FORM from "../../UI/Form";
-
-const initialWatercraft = {
-  Boat_Img: null,
-  Registration: null,
-  Model_ID: 0,
-  Status_ID: 0,
-};
+import SetInitial from "../../util/SetInitial";
+import Conformance from "../../util/Conformance";
+import IsInputValid from "../../util/IsInputValid";
+import FormInputErrorMessages from "../../util/FormInputErrorMessages";
+import { addCrewMemberEndpoints } from "../../util/FormEndpoints";
 
 const newEmployeeReservation = {
   Employee_ID: 0,
@@ -22,58 +20,15 @@ const newEmployeeReservation = {
 function AddCrewMemberToBookingForm() {
   // Initialisation ------------------------------
 
-  const title = "Adding Crew Member";
   const navigate = useNavigate(); //used to navigate to diffent pages
   const { state } = useLocation();
-  const bookingID = state.bookingNumber;
 
-  const crew = state.crew;
-  const alreadyCrewIDs = new Set();
-  let crewPresent = true;
-
-  if (crew.length > 0) {
-    crew.map((member) => {
-      alreadyCrewIDs.add(member.Employee_ID);
-    });
-  } else {
-    crewPresent = false;
-    console.log("No crew");
-  }
-
-  const conformance = {
-    html2js: {
-      Employee_ID: (value) => (value == 0 ? null : parseInt(value)),
-      BoatReservation_ID: (value) => (value == 0 ? null : parseInt(value)),
-      EmployeeReservation_ID: (value) => (value == 0 ? null : parseInt(value)),
-    },
-
-    js2html: {
-      Employee_ID: (value) => (value === null ? 0 : value),
-      BoatReservation_ID: (value) => (value === null ? 0 : value),
-      EmployeeReservation_ID: (value) => (value === null ? 0 : value),
-    },
-  };
-
-  const isValid = {
-    Employee_ID: (value) => value != 0 || value != "0",
-    BoatReservation_ID: (value) => value != 0 || value != "0",
-    EmployeeReservation_ID: (value) => value != 0 || value != "0",
-  };
-
-  const errorMessage = {
-    Employee_ID: "No Employee Selected",
-    BoatReservation_ID: "No Boat Selected",
-    EmployeeReservation_ID: "Not set",
-  };
-
-  const boatreservationEndpoint = `/boatsreservations/booking/${bookingID}`;
-  const postNewCrewMemberEndpoint = "/employeereservations";
-  const allEmployeesEnpoint = `/employees`;
+  const [title, bookingID, crewPresent, crew, alreadyCrewIDs] = SetInitial.addCrewMember(newEmployeeReservation, state);
 
   //State ---------------------------------------
   const [newMember, setNewMember] = useState(newEmployeeReservation);
-  const [boatreservations, setBoatreservations, loadingBoatMessage, loadBoatReservations] = useLoad(boatreservationEndpoint);
-  const [employees, setEmployees, loadingEmployeesMessage, loadEmployees] = useLoad(allEmployeesEnpoint);
+  const [boatreservations, setBoatreservations, loadingBoatMessage, loadBoatReservations] = useLoad(addCrewMemberEndpoints.getBoatReservations(bookingID));
+  const [employees, setEmployees, loadingEmployeesMessage, loadEmployees] = useLoad(addCrewMemberEndpoints.allEmployeesEnpoint);
   const [employeeSelections, setEmployeeSelections] = useState([]);
   const [errors, setErrors] = useState(Object.keys(newEmployeeReservation).reduce((acc, key) => ({ ...acc, [key]: null }), {}));
 
@@ -98,16 +53,13 @@ function AddCrewMemberToBookingForm() {
   }, [employees]);
 
   //Handlers -------------------------------------
-  const handleCancel = () => {
-    navigate(-1);
-  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    const conformedValue = conformance.html2js[name](value);
+    const conformedValue = Conformance.addCrewMember.html2js[name](value);
     console.log(conformedValue);
     setNewMember({ ...newMember, [name]: conformedValue });
-    setErrors({ ...errors, [name]: isValid[name](conformedValue) ? null : errorMessage[name] });
+    setErrors({ ...errors, [name]: IsInputValid.addCrewMember[name](conformedValue) ? null : FormInputErrorMessages.addCrewMember[name] });
   };
 
   useEffect(() => {
@@ -118,44 +70,48 @@ function AddCrewMemberToBookingForm() {
     setNewMember(newMember);
   }, [newMember]); // I NEED THIS == without it all the error message are one step behind
 
-  const isValidMemberValid = (crewMember) => {
-    let isValidMemberValid = true;
-    Object.keys(newMember).forEach((key) => {
-      // we do this becasue setErrors is asychronous thus we cannot determine its stte when we need to go through it
-      if (isValid[key](newMember[key])) {
-        errors[key] = null;
-      } else {
-        errors[key] = errorMessage[key];
-        isValidMemberValid = false;
-      }
-    });
-    return isValidMemberValid;
-  };
-
   const getEmployeeReservationNumber = () => {
     const selectedBoatReservationID = newMember.BoatReservation_ID;
+    console.log(selectedBoatReservationID);
     const employeeReservationNumber = crew.find((member) => member.BoatReservation_ID === selectedBoatReservationID).EmployeeReservation_ID;
     console.log(employeeReservationNumber);
     return employeeReservationNumber;
   };
 
+  const handleCancel = () => {
+    navigate(-1);
+  };
+
   const handleSubmit = async () => {
-    if (crewPresent) {
-      const selectedEmployeeReservationID = getEmployeeReservationNumber();
-      setNewMember({ ...newMember, ["EmployeeReservation_ID"]: selectedEmployeeReservationID });
-      newMember.EmployeeReservation_ID = selectedEmployeeReservationID;
+    if (newMember.Employee_ID === 0 || newMember.BoatReservation_ID === 0) {
+      if (newMember.Employee_ID === 0) {
+        errors["Employee_ID"] = FormInputErrorMessages.addCrewMember["Employee_ID"];
+      } else {
+        errors["Employee_ID"] = null;
+      }
+      if (newMember.BoatReservation_ID === 0) {
+        errors["BoatReservation_ID"] = FormInputErrorMessages.addCrewMember["BoatReservation_ID"];
+      } else {
+        errors["BoatReservation_ID"] = null;
+      }
     } else {
-      const randomNumber = Math.floor(Math.random() * 10000) + 1;
-      setNewMember({ ...newMember, ["EmployeeReservation_ID"]: randomNumber });
+      if (crewPresent) {
+        const selectedEmployeeReservationID = getEmployeeReservationNumber();
+        setNewMember({ ...newMember, ["EmployeeReservation_ID"]: selectedEmployeeReservationID });
+        newMember.EmployeeReservation_ID = selectedEmployeeReservationID;
+      } else {
+        const randomNumber = Math.floor(Math.random() * 10000) + 1;
+        setNewMember({ ...newMember, ["EmployeeReservation_ID"]: randomNumber });
+      }
     }
 
-    const check = isValidMemberValid(newMember);
+    const check = IsInputValid.isValid(newMember, IsInputValid.addCrewMember, errors, FormInputErrorMessages.addCrewMember);
     setErrors({ ...errors });
     console.log(errors);
     if (check) {
       let result = null;
       console.log(newMember);
-      result = await API.post(postNewCrewMemberEndpoint, newMember);
+      result = await API.post(addCrewMemberEndpoints.postNewCrewMemberEndpoint, newMember);
 
       console.log(result);
       if (result.isSuccess) {
@@ -179,7 +135,7 @@ function AddCrewMemberToBookingForm() {
             list={employeeSelections}
             loadingMessage={loadingEmployeesMessage}
             name="Employee_ID"
-            conformance={conformance.js2html["Employee_ID"](newMember.Employee_ID)}
+            conformance={Conformance.addCrewMember.js2html["Employee_ID"](newMember.Employee_ID)}
             onChange={handleChange}
             listKey="Employee_ID"
             listValue="Employee_ID"
@@ -192,7 +148,7 @@ function AddCrewMemberToBookingForm() {
             list={boatreservations}
             loadingMessage={loadingBoatMessage}
             name="BoatReservation_ID"
-            conformance={conformance.js2html["BoatReservation_ID"](newMember.BoatReservation_ID)}
+            conformance={Conformance.addCrewMember.js2html["BoatReservation_ID"](newMember.BoatReservation_ID)}
             onChange={handleChange}
             listKey="Boatreservation_ID"
             listValue="Boatreservation_ID"

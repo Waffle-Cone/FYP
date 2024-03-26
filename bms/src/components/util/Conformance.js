@@ -32,7 +32,35 @@ const employee = {
   },
 };
 
+const booking = {
+  html2js: {
+    Booking_Notes: (value) => (value === "" ? null : value),
+    Charter_Type_ID: (value) => (value == 0 ? null : parseInt(value)),
+  },
+
+  js2html: {
+    Booking_Notes: (value) => (value === null ? "" : value),
+    Charter_Type_ID: (value) => (value === null ? 0 : value),
+  },
+};
+
+const addCrewMember = {
+  html2js: {
+    Employee_ID: (value) => (value == 0 ? null : parseInt(value)),
+    BoatReservation_ID: (value) => (value == 0 ? null : parseInt(value)),
+    EmployeeReservation_ID: (value) => (value == 0 ? null : parseInt(value)),
+  },
+
+  js2html: {
+    Employee_ID: (value) => (value === null ? 0 : value),
+    BoatReservation_ID: (value) => (value === null ? 0 : value),
+    EmployeeReservation_ID: (value) => (value === null ? 0 : value),
+  },
+};
+
 Conformance.watercraft = watercraft;
 Conformance.employee = employee;
+Conformance.booking = booking;
+Conformance.addCrewMember = addCrewMember;
 
 export default Conformance;

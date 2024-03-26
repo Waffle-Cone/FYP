@@ -28,7 +28,7 @@ const validateAddEmployeeForm = () => {
 };
 
 const validateAddBookingForm = () => {
-  return [check("Booking_Notes").isString()];
+  return [check("Booking_Notes").isString().optional({ nullable: true }), check("BookingDate").isString(), check("Duration").isString(), check("Charter_Type_ID").isInt()];
 };
 
 export default FormValidator;

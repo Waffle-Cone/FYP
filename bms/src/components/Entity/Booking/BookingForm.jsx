@@ -1,4 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import API from "../../API/API";
+import useLoad from "../../API/useLoad";
 import FORM from "../../UI/Form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,6 +11,11 @@ import Icon from "../../UI/Icons";
 import { useEffect, useRef, useState } from "react";
 import FormatTimeString from "../../util/FormatTimeString";
 import Action from "../../UI/Actions";
+import Conformance from "../../util/Conformance";
+import SetInitial from "../../util/SetInitial";
+import IsInputValid from "../../util/IsInputValid";
+import FormInputErrorMessages from "../../util/FormInputErrorMessages";
+import { bookingEndpoints } from "../../util/FormEndpoints";
 
 const intialBooking = {
   Booking_Notes: null,
@@ -23,27 +30,7 @@ function BookingForm() {
   const { state } = useLocation();
 
   //One form for both add and modify
-  let isModifyForm = false;
-  let selectedBookingNumber = null;
-  let title = "Add Booking";
-
-  if (state) {
-    isModifyForm = true;
-    selectedBookingNumber = state.intialBooking.Booking_Number;
-    title = "Modify Booking";
-    console.log(selectedBookingNumber);
-
-    //set up the intialBooking object
-    intialBooking.Booking_Notes = state.intialBooking.Booking_Notes;
-    intialBooking.BookingDate = state.intialBooking.BookingDate;
-    intialBooking.Duration = state.intialBooking.Duration;
-    intialBooking.Charter_Type_ID = state.intialBooking.Charter_Type_ID;
-  } else {
-    intialBooking.Booking_Notes = null;
-    intialBooking.BookingDate = null;
-    intialBooking.Duration = null;
-    intialBooking.Charter_Type_ID = 0;
-  }
+  const [theBooking, selectedBookingNumber, title, isModifyForm] = SetInitial.booking(intialBooking, state);
 
   const checkTime = () => {
     const bookingStartDateTime = new Date(`2024/03/26 ${startTime}:00`);
@@ -57,8 +44,10 @@ function BookingForm() {
   };
 
   // State ----------------------------
-  const [booking, setBooking] = useState(intialBooking);
-  const [errors, setErrors] = useState(Object.keys(intialBooking).reduce((acc, key) => ({ ...acc, [key]: null }), {}));
+  const [booking, setBooking] = useState(theBooking);
+  const [charterTypes, setCharterTypes, loadingChartersMessage, loadTypes] = useLoad(bookingEndpoints.charterTypesEndpoint);
+
+  const [errors, setErrors] = useState(Object.keys(booking).reduce((acc, key) => ({ ...acc, [key]: null }), {}));
   const [date, setDate] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [startTimeError, setStartTimeError] = useState(null);
@@ -75,6 +64,12 @@ function BookingForm() {
   }, [startTime]);
 
   // Handlers -------------------------
+  const handleNotesAndType = (event) => {
+    const { name, value } = event.target;
+    const conformedValue = Conformance.booking.html2js[name](value);
+    setBooking({ ...booking, [name]: conformedValue });
+    setErrors({ ...errors, [name]: IsInputValid.booking[name](conformedValue) ? null : FormInputErrorMessages.booking[name] });
+  };
 
   const handleDate = (date) => {
     const bookingDate = FormatTimeString.dateString(date);
@@ -90,10 +85,6 @@ function BookingForm() {
   const handleFinishTime = (finishTime) => {
     dateAndTimeErros(true, true, finishTime);
     setFinishTime(finishTime);
-  };
-
-  const handleCancel = () => {
-    navigate(-1);
   };
 
   const dateAndTimeErros = (date, startTime, finishTime) => {
@@ -119,6 +110,9 @@ function BookingForm() {
     if (date === null || startTime === null || finishTime === null || timeError !== null) {
       dateSubmissionReady = false;
       dateAndTimeErros(date, startTime, finishTime);
+      booking.BookingDate = null;
+      booking.Duration = null;
+      setBooking({ ...booking, ["BookingDate"]: null, ["Duration"]: null });
     } else {
       dateAndTimeErros(date, startTime, finishTime);
       const bookingStartDateTime = `${date} ${startTime}:00`;
@@ -141,18 +135,62 @@ function BookingForm() {
     return dateSubmissionReady;
   };
 
-  const handleSubmit = () => {
+  const handleCancel = () => {
+    navigate(-1);
+  };
+
+  const handleSubmit = async () => {
     const datesReady = handleDateSubmission();
-    console.log(datesReady);
-    console.log(booking);
+    const check = IsInputValid.isValidWithException(booking, IsInputValid.booking, errors, FormInputErrorMessages.booking, "Booking_Notes");
+
+    if (datesReady && check) {
+      console.log(`submitting bookig: ${JSON.stringify(booking)}`);
+
+      let result = null;
+      result = await API.post(bookingEndpoints.post, booking);
+
+      console.log(result);
+      if (result.isSuccess) {
+        console.log("Insert success");
+        navigate("/bookings");
+      } else {
+        console.log(`Insert NOT Successful: ${result.message}`);
+      }
+    } else {
+      console.log(datesReady);
+
+      console.log(errors);
+    }
   };
   // View -----------------------------
   return (
     <>
-      <TimePicker />
       <FORM.Container>
         <h1 id="title">{title}</h1>
-        <FORM.Tray></FORM.Tray>
+        <FORM.Tray>
+          <FORM.Select
+            htmlFor="Charter_Type_ID"
+            text="Charter Type"
+            list={charterTypes}
+            loadingMessage={loadingChartersMessage}
+            name="Charter_Type_ID"
+            conformance={Conformance.booking.js2html["Charter_Type_ID"](booking.Charter_Type_ID)}
+            onChange={handleNotesAndType}
+            listKey="Charter_Type_ID"
+            listValue="Charter_Type_ID"
+            listText="Charter_Name"
+            errors={errors.Charter_Type_ID}
+          />
+          <FORM.Input
+            htmlFor="Booking_Notes"
+            text="Booking Notes "
+            type="text"
+            FieldName="Booking_Notes"
+            conformance={Conformance.booking.js2html["Booking_Notes"](booking.Booking_Notes)}
+            onChange={handleNotesAndType}
+            errors={errors.Booking_Notes}
+          />
+        </FORM.Tray>
         <label>
           Booking Date
           <span style={{ display: "flex" }}>
