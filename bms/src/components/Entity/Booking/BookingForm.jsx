@@ -16,6 +16,7 @@ import SetInitial from "../../util/SetInitial";
 import IsInputValid from "../../util/IsInputValid";
 import FormInputErrorMessages from "../../util/FormInputErrorMessages";
 import { bookingEndpoints } from "../../util/FormEndpoints";
+import ListBox from "../../UI/ListBoxStuff/ListBox";
 
 const intialBooking = {
   Booking_Notes: null,
@@ -55,6 +56,9 @@ function BookingForm() {
   const [finishTimeError, setFinishTimeError] = useState(null);
   const [timeError, setTimeError] = useState(null);
   const [dateError, setDateError] = useState(null);
+
+  //SelectedWatercraft
+  const [selectedBoats, setSelectedBoats] = useState(new Set());
 
   useEffect(() => {
     checkTime();
@@ -135,6 +139,11 @@ function BookingForm() {
     return dateSubmissionReady;
   };
 
+  const handleSelect = (boat) => {
+    selectedBoats.add(boat);
+    setSelectedBoats(new Set(selectedBoats));
+  };
+
   const handleCancel = () => {
     navigate(-1);
   };
@@ -208,6 +217,8 @@ function BookingForm() {
           </span>
           <span style={{ color: "red" }}>{timeError || startTimeError}</span>
         </label>
+
+        <ListBox.BoatBox bookingDate={date} title={"Select Watercraft"} handleSelect={handleSelect} selectedBoats={selectedBoats} />
 
         {startTime ? (
           <label>

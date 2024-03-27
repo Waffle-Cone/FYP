@@ -49,7 +49,7 @@ const Select = ({ htmlFor, text, list, loadingMessage, name, conformance, onChan
         <p>{loadingMessage}</p>
       ) : (
         <select name={name} value={conformance} onChange={onChange}>
-          <option selected={true} value="0" disabled>
+          <option value="0" disabled>
             None Selected
           </option>
           {list.map((x) => (

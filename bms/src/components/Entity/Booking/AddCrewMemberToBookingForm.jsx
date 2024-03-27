@@ -1,7 +1,6 @@
 import { useState, useEffect, Button, useRef } from "react";
 import API from "../../API/API";
 import { useLocation, useNavigate } from "react-router-dom";
-import isURL from "is-url";
 import useLoad from "../../API/useLoad.jsx";
 import Action from "../../UI/Actions";
 import FORM from "../../UI/Form";

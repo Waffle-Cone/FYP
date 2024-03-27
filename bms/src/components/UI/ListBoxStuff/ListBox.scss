@@ -18,4 +18,21 @@ div.ListBox {
     flex-direction: column;
     gap: 15px;
   }
+
+  div.scrolling {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 200px; /* set a fixed height for the div */
+    overflow-y: scroll; /* enable vertical scrollbar */
+    width: 500px;
+    padding: 10px;
+  }
+
+  div.selectedWatercraft {
+    background-color: lightgray;
+    border: 3px solid gray;
+    padding: 10px;
+    border-radius: 5px;
+  }
 }

@@ -20,6 +20,7 @@ const router = new Router();
 router.get("/", (req, res) => controller.get(req, res)); // for all boatss
 router.get("/:id", (req, res) => controller.get(req, res)); // for all boatss
 router.get("/details/:id", (req, res) => controller.get(req, res));
+router.get("/availableondate/:date", (req, res) => controller.get(req, res));
 
 router.post("/", FormValidator.validateAddBoatForm(), (req, res) => controller.post(req, res));
 router.put("/:id", (req, res) => controller.put(req, res));

@@ -46,7 +46,7 @@ const BookingDetails = () => {
           <Action.Modify buttonText="Edit" showText={true} />
         </Action.Tray>
       </div>
-      <ListBox.CrewBox crew={crew} loadingMessage={loadingCrewMessage} handleAdd={handleAdd} />
+      <ListBox.CrewBox crew={crew} loadingMessage={loadingCrewMessage} handleAdd={handleAdd} title={"Add New Crew Member"} />
     </div>
   );
 };

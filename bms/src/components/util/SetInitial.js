@@ -77,7 +77,7 @@ const booking = (intialBooking, state) => {
 };
 
 const addCrewMember = (initialEmployeeReservation, state) => {
-  const title = "Add EMployee to Crew";
+  const title = "Add Employee to Crew";
   const bookingID = state.bookingNumber;
   const crew = state.crew;
   const alreadyCrewIDs = new Set();
