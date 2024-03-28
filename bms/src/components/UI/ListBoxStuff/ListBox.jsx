@@ -3,7 +3,7 @@ import useLoad from "../../API/useLoad";
 import Action from "../Actions";
 import EmployeeListCard from "./EmployeeListCard";
 import "./ListBox.scss";
-import WatercraftListCard from "./WatercraftListCard";
+import { WatercraftListCard, SelectedWatercraftCard } from "./WatercraftListCard";
 
 export default function ListBox({ children, handleAdd, title }) {
   // Initialisations ---------------------
@@ -46,7 +46,7 @@ const CrewBox = ({ crew, loadingMessage, handleAdd, title }) => {
   );
 };
 
-const BoatBox = ({ bookingDate, handleAdd, handleSelect, selectedBoats, title }) => {
+const BoatBox = ({ bookingDate, handleAdd, handleSelect, handleDeselect, selectedBoats, title }) => {
   // Initialisations ---------------------
 
   let date = "";
@@ -75,12 +75,12 @@ const BoatBox = ({ bookingDate, handleAdd, handleSelect, selectedBoats, title })
         <>
           <div className="scrolling">
             {availableBoats.map((boat) => (
-              <WatercraftListCard key={boat.Registration} boat={boat} select={handleSelect} />
+              <WatercraftListCard key={boat.Registration} boat={boat} select={handleSelect} selectedBoats={selectedBoats} handleDeselect={handleDeselect} />
             ))}
           </div>
           <div className="selectedWatercraft">
             <h3>Selected:</h3>
-            {selectedBoats ? Array.from(selectedBoats).map((boat) => <p key={boat.Registration}>{boat.Registration}</p>) : null}
+            {selectedBoats ? Array.from(selectedBoats).map((boat) => <SelectedWatercraftCard boat={boat} handleDeselect={handleDeselect} />) : null}
           </div>
         </>
       )}

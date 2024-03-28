@@ -58,6 +58,7 @@ function BookingForm() {
   const [dateError, setDateError] = useState(null);
 
   //SelectedWatercraft
+
   const [selectedBoats, setSelectedBoats] = useState(new Set());
 
   useEffect(() => {
@@ -143,6 +144,10 @@ function BookingForm() {
     selectedBoats.add(boat);
     setSelectedBoats(new Set(selectedBoats));
   };
+  const handleDeselect = (boat) => {
+    selectedBoats.delete(boat);
+    setSelectedBoats(new Set(selectedBoats));
+  };
 
   const handleCancel = () => {
     navigate(-1);
@@ -218,7 +223,7 @@ function BookingForm() {
           <span style={{ color: "red" }}>{timeError || startTimeError}</span>
         </label>
 
-        <ListBox.BoatBox bookingDate={date} title={"Select Watercraft"} handleSelect={handleSelect} selectedBoats={selectedBoats} />
+        <ListBox.BoatBox bookingDate={date} title={"Select Watercraft"} handleSelect={handleSelect} handleDeselect={handleDeselect} selectedBoats={selectedBoats} />
 
         {startTime ? (
           <label>
