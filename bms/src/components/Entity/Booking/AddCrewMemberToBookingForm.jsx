@@ -101,6 +101,7 @@ function AddCrewMemberToBookingForm() {
       } else {
         const randomNumber = Math.floor(Math.random() * 10000) + 1;
         setNewMember({ ...newMember, ["EmployeeReservation_ID"]: randomNumber });
+        newMember.EmployeeReservation_ID = randomNumber;
       }
     }
 

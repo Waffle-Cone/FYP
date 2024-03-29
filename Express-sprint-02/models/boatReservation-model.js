@@ -1,7 +1,7 @@
 const model = {};
 
 model.table = "boatreservation";
-model.mutableFields = ["Boatreservation_ID,Registration,Booking_Number"];
+model.mutableFields = ["Registration", "Booking_Number"];
 model.idField = "Boatreservation_ID";
 
 model.buildReadQuery = (req) => {

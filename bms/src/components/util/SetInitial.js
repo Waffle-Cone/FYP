@@ -89,7 +89,6 @@ const addCrewMember = (initialEmployeeReservation, state) => {
     });
   } else {
     crewPresent = false;
-    console.log("No crew");
   }
   return [title, bookingID, crewPresent, crew, alreadyCrewIDs];
 };

@@ -5,22 +5,25 @@ import EmployeeListCard from "./EmployeeListCard";
 import "./ListBox.scss";
 import { WatercraftListCard, SelectedWatercraftCard } from "./WatercraftListCard";
 
-export default function ListBox({ children, handleAdd, title }) {
+export default function ListBox({ children, handleAdd, title, error }) {
   // Initialisations ---------------------
   // State -------------------------------
   // Handlers ----------------------------
   // View --------------------------------
   return (
-    <div className="ListBox">
-      <h3>{title}</h3>
-      {handleAdd ? (
-        <Action.Tray>
-          <Action.Add buttonText="Add Crew Memeber" showText={true} onClick={handleAdd} />
-        </Action.Tray>
-      ) : null}
+    <>
+      <div className="ListBox">
+        <h3>{title}</h3>
+        {handleAdd ? (
+          <Action.Tray>
+            <Action.Add buttonText="Add Crew Memeber" showText={true} onClick={handleAdd} />
+          </Action.Tray>
+        ) : null}
 
-      <div className="List">{children}</div>
-    </div>
+        <div className="List">{children}</div>
+      </div>
+      <span style={{ color: "red" }}>{error}</span>
+    </>
   );
 }
 
@@ -46,27 +49,24 @@ const CrewBox = ({ crew, loadingMessage, handleAdd, title }) => {
   );
 };
 
-const BoatBox = ({ bookingDate, handleAdd, handleSelect, handleDeselect, selectedBoats, title }) => {
+const BoatBox = ({ bookingDate, handleAdd, handleSelect, handleDeselect, selectedBoats, title, error }) => {
   // Initialisations ---------------------
 
   let date = "";
   let availableBoatsEndpoint = ``;
   if (bookingDate) {
     date = bookingDate.replaceAll(/\//g, "-");
-    console.log(` BOATBOX === ${date}`);
     availableBoatsEndpoint = `/boats/availableondate/${date}`;
   } else {
     availableBoatsEndpoint = `/boats`;
   }
 
-  console.log(selectedBoats);
   // State -------------------------------
   const [availableBoats, setAvailableBoats, loadingMessage, loadBoats] = useLoad(availableBoatsEndpoint);
-  //console.log(availableBoats);
   // Handlers ----------------------------
   // View --------------------------------
   return (
-    <ListBox handleAdd={handleAdd} title={title}>
+    <ListBox handleAdd={handleAdd} title={title} error={error}>
       {!availableBoats ? (
         <p>{loadingMessage}</p>
       ) : availableBoats.length === 0 ? (
@@ -80,7 +80,7 @@ const BoatBox = ({ bookingDate, handleAdd, handleSelect, handleDeselect, selecte
           </div>
           <div className="selectedWatercraft">
             <h3>Selected:</h3>
-            {selectedBoats ? Array.from(selectedBoats).map((boat) => <SelectedWatercraftCard boat={boat} handleDeselect={handleDeselect} />) : null}
+            {selectedBoats ? Array.from(selectedBoats).map((boat) => <SelectedWatercraftCard key={boat.Registration} boat={boat} handleDeselect={handleDeselect} />) : null}
           </div>
         </>
       )}

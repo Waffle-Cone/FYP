@@ -3,9 +3,6 @@ import { check } from "express-validator";
  * Contains all the validations used for each form
  */
 const FormValidator = {};
-FormValidator.validateAddBoatForm = () => validateAddBoatForm();
-FormValidator.validateAddEmployeeForm = () => validateAddEmployeeForm();
-FormValidator.validateAddBookingForm = () => validateAddBookingForm();
 
 const validateAddBoatForm = () => {
   return [
@@ -30,6 +27,14 @@ const validateAddEmployeeForm = () => {
 const validateAddBookingForm = () => {
   return [check("Booking_Notes").isString().optional({ nullable: true }), check("BookingDate").isString(), check("Duration").isString(), check("Charter_Type_ID").isInt()];
 };
+const validateBoatReservation = () => {
+  return [check("Registration").isString(), check("Booking_Number").isInt()];
+};
+
+FormValidator.validateAddBoatForm = () => validateAddBoatForm();
+FormValidator.validateAddEmployeeForm = () => validateAddEmployeeForm();
+FormValidator.validateAddBookingForm = () => validateAddBookingForm();
+FormValidator.validateBoatReservation = () => validateBoatReservation();
 
 export default FormValidator;
 //joi validator check

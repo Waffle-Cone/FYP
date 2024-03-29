@@ -17,6 +17,7 @@ import IsInputValid from "../../util/IsInputValid";
 import FormInputErrorMessages from "../../util/FormInputErrorMessages";
 import { bookingEndpoints } from "../../util/FormEndpoints";
 import ListBox from "../../UI/ListBoxStuff/ListBox";
+import PostMultipleObjects from "../../util/postMultipleObjects";
 
 const intialBooking = {
   Booking_Notes: null,
@@ -56,6 +57,7 @@ function BookingForm() {
   const [finishTimeError, setFinishTimeError] = useState(null);
   const [timeError, setTimeError] = useState(null);
   const [dateError, setDateError] = useState(null);
+  const [boatError, setBoatError] = useState(null);
 
   //SelectedWatercraft
 
@@ -140,6 +142,16 @@ function BookingForm() {
     return dateSubmissionReady;
   };
 
+  const boatCheck = () => {
+    if (selectedBoats["size"] === 0) {
+      setBoatError("Please select boat(s)");
+      return false;
+    } else {
+      setBoatError(null);
+      return true;
+    }
+  };
+
   const handleSelect = (boat) => {
     selectedBoats.add(boat);
     setSelectedBoats(new Set(selectedBoats));
@@ -155,27 +167,32 @@ function BookingForm() {
 
   const handleSubmit = async () => {
     const datesReady = handleDateSubmission();
+    const isBoatReady = boatCheck();
     const check = IsInputValid.isValidWithException(booking, IsInputValid.booking, errors, FormInputErrorMessages.booking, "Booking_Notes");
 
-    if (datesReady && check) {
+    if (datesReady && check && isBoatReady) {
       console.log(`submitting bookig: ${JSON.stringify(booking)}`);
+      // selectedBoats.forEach((boat) => console.log(boat));
 
       let result = null;
       result = await API.post(bookingEndpoints.post, booking);
 
-      console.log(result);
       if (result.isSuccess) {
-        console.log("Insert success");
+        console.log("Booking Insert success");
+
+        PostMultipleObjects.boatReservation(result.result.pop()["Booking_Number"], selectedBoats);
         navigate("/bookings");
       } else {
         console.log(`Insert NOT Successful: ${result.message}`);
       }
     } else {
-      console.log(datesReady);
+      console.log("is dates ready", datesReady);
+      console.log("is boats ready", isBoatReady);
 
       console.log(errors);
     }
   };
+
   // View -----------------------------
   return (
     <>
@@ -223,8 +240,6 @@ function BookingForm() {
           <span style={{ color: "red" }}>{timeError || startTimeError}</span>
         </label>
 
-        <ListBox.BoatBox bookingDate={date} title={"Select Watercraft"} handleSelect={handleSelect} handleDeselect={handleDeselect} selectedBoats={selectedBoats} />
-
         {startTime ? (
           <label>
             Finish Time
@@ -235,6 +250,17 @@ function BookingForm() {
             <span style={{ color: "red" }}>{timeError || finishTimeError}</span>
           </label>
         ) : null}
+        {date ? (
+          <ListBox.BoatBox
+            bookingDate={date}
+            title={"Select Watercraft"}
+            handleSelect={handleSelect}
+            handleDeselect={handleDeselect}
+            selectedBoats={selectedBoats}
+            error={boatError}
+          />
+        ) : null}
+
         <Action.Tray>
           <Action.Cancel buttonText="Cancel" showText={true} onClick={handleCancel}></Action.Cancel>
           <Action.Submit buttonText="Submit" showText={true} onClick={handleSubmit}></Action.Submit>

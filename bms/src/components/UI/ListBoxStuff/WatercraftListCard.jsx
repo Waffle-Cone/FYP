@@ -5,24 +5,20 @@ import "./WatercraftListCard.scss";
 export const WatercraftListCard = ({ boat, select, selectedBoats, handleDeselect }) => {
   // Initialisations ---------------------
   const isSelected = useRef(false);
-
-  useEffect(() => {
-    if (selectedBoats != undefined) {
-      Array.from(selectedBoats).find((search) => (search.Registration === boat.Registration ? (isSelected.current = true) : (isSelected.current = false)));
-    }
-  }, [isSelected.current]);
-
   // State -------------------------------
+  isSelected.current = selectedBoats.has(boat);
+
   // Handlers ----------------------------
   const handleButtonSelected = () => {
     if (isSelected.current) {
       handleDeselect(boat);
-      //isSelected.current = false;
+      isSelected.current = false;
     } else {
       select(boat);
-      //isSelected.current = true;
+      isSelected.current = true;
     }
   };
+
   // View --------------------------------
   return (
     <button
