@@ -11,6 +11,7 @@ import employeeRouter from "./routers/employees-router.js";
 import employeeReservationRouter from "./routers/employeeReservation-router.js";
 import boatsReservationsRouter from "./routers/boatReservation-router.js";
 import jobsRouter from "./routers/jobs-router.js";
+import accountRouter from "./routers/account-router.js";
 
 //Configure express app with middleware --------------------------------------------------
 const app = appSetup();
@@ -26,6 +27,7 @@ app.use("/api/itemreservations", itemReservation);
 app.use("/api/employees", employeeRouter);
 app.use("/api/employeereservations", employeeReservationRouter);
 app.use("/api/jobs", jobsRouter);
+app.use("/api/accounts", accountRouter);
 
 // Start server -----------------------------------------------------------
 serverStart(app);

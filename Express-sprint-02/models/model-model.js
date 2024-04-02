@@ -1,7 +1,7 @@
 const model = {};
 
 model.table = "models";
-model.mutableFields = ["models.Model_ID,models.Model_Name"];
+model.mutableFields = ["models.Model_ID", "models.Model_Name"];
 model.idField = null;
 
 model.buildReadQuery = () => {
