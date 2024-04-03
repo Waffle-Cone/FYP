@@ -12,31 +12,144 @@ import Bookings from "./components/view/Bookings.jsx";
 import BookingDetails from "./components/Entity/Booking/BookingDetails.jsx";
 import AddCrewMemberToBookingForm from "./components/Entity/Booking/AddCrewMemberToBookingForm.jsx";
 import BookingForm from "./components/Entity/Booking/BookingForm.jsx";
+import { AuthProvider, useAuth } from "./components/auth/context/AuthContext.jsx";
+import { AdminProtectedRoute, ProtectedRoute } from "./components/auth/ProtectedRoute.jsx";
+import { useEffect, useRef } from "react";
 
-function App() {
-  const loggedInUser = "Admin";
+const ContextApp = () => {
+  const { user, isLoggedIn } = useAuth();
+  const userType = useRef(-1);
+
+  if (user !== null) {
+    userType.current = user.userType;
+    console.log(user);
+  } else {
+    userType.current = -1;
+  }
+
+  console.log(userType.current);
 
   return (
     <BrowserRouter>
-      <Layout loggedInUser={loggedInUser}>
+      <Layout userType={userType.current}>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/watercraft" element={<WaterCraft />} />
-          <Route path="/addWatercraft" element={<WatercraftForm />} />
-          <Route path="/editWatercraft" element={<WatercraftForm />} />
-          <Route path="/watercraftDetails" element={<WatercraftDetails />} />
-          <Route path="/staff" element={<Employee />} />
-          <Route path="/addStaff" element={<EmployeeForm />} />
-          <Route path="/editEmployee" element={<EmployeeForm />} />
-          <Route path="/bookings" element={<Bookings />} />
-          <Route path="/addBooking" element={<BookingForm />} />
-          <Route path="/bookingDetails" element={<BookingDetails />} />
-          <Route path="/addCrewMember" element={<AddCrewMemberToBookingForm />} />
-          <Route path="/*" element={<PageNotFound />} />
+          <Route path="/" element={<Login />} />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute isLoggedIn={isLoggedIn}>
+                <Home userType={userType.current} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/watercraft"
+            element={
+              <AdminProtectedRoute userType={userType.current} isLoggedIn={isLoggedIn}>
+                <WaterCraft />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/addWatercraft"
+            element={
+              <AdminProtectedRoute userType={userType.current} isLoggedIn={isLoggedIn}>
+                <WatercraftForm />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/editWatercraft"
+            element={
+              <AdminProtectedRoute userType={userType.current} isLoggedIn={isLoggedIn}>
+                <WatercraftForm />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/watercraftDetails"
+            element={
+              <AdminProtectedRoute userType={userType.current} isLoggedIn={isLoggedIn}>
+                <WatercraftDetails />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/staff"
+            element={
+              <AdminProtectedRoute userType={userType.current} isLoggedIn={isLoggedIn}>
+                <Employee />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/addStaff"
+            element={
+              <AdminProtectedRoute userType={userType.current} isLoggedIn={isLoggedIn}>
+                <EmployeeForm />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/editEmployee"
+            element={
+              <AdminProtectedRoute userType={userType.current} isLoggedIn={isLoggedIn}>
+                <EmployeeForm />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/bookings"
+            element={
+              <ProtectedRoute user={user} isLoggedIn={isLoggedIn}>
+                <Bookings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/addBooking"
+            element={
+              <AdminProtectedRoute userType={userType.current} isLoggedIn={isLoggedIn}>
+                <BookingForm />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/bookingDetails"
+            element={
+              <ProtectedRoute isLoggedIn={isLoggedIn}>
+                <BookingDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/addCrewMember"
+            element={
+              <AdminProtectedRoute userType={userType.current} isLoggedIn={isLoggedIn}>
+                <AddCrewMemberToBookingForm />
+              </AdminProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/*"
+            element={
+              <ProtectedRoute isLoggedIn={isLoggedIn}>
+                <PageNotFound />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Layout>
     </BrowserRouter>
+  );
+};
+
+function App() {
+  return (
+    <AuthProvider>
+      <ContextApp />
+    </AuthProvider>
   );
 }
 

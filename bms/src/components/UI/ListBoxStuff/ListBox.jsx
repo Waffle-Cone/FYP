@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useLoad from "../../API/useLoad";
+import { useAuth } from "../../auth/context/AuthContext";
 import Action from "../Actions";
 import EmployeeListCard from "./EmployeeListCard";
 import "./ListBox.scss";
@@ -29,6 +30,13 @@ export default function ListBox({ children, handleAdd, title, error }) {
 
 const CrewBox = ({ crew, loadingMessage, handleAdd, title }) => {
   // Initialisations ---------------------
+  const { user } = useAuth();
+
+  if (user.userType === 2) {
+    handleAdd = false;
+    title = "Crew Members";
+  }
+
   // State -------------------------------
   // Handlers ----------------------------
   // View --------------------------------

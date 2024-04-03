@@ -58,9 +58,22 @@ const addCrewMember = {
   },
 };
 
+const login = {
+  html2js: {
+    ID: (value) => (value === null ? "" : value),
+    Password: (value) => (value === "" ? null : value),
+  },
+
+  js2html: {
+    ID: (value) => (value === null ? "" : value),
+    Password: (value) => (value === null ? "" : value),
+  },
+};
+
 Conformance.watercraft = watercraft;
 Conformance.employee = employee;
 Conformance.booking = booking;
 Conformance.addCrewMember = addCrewMember;
+Conformance.login = login;
 
 export default Conformance;

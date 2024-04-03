@@ -15,6 +15,7 @@ const controller = new Controller(accessor);
 const router = new Router();
 router.get("/", (req, res) => controller.get(req, res));
 router.get("/:id", (req, res) => controller.get(req, res));
+router.get("/employee/:employeeID", (req, res) => controller.get(req, res));
 router.get("/boatreservations/:boatreservation", (req, res) => controller.get(req, res));
 router.post("/", (req, res) => controller.post(req, res));
 
