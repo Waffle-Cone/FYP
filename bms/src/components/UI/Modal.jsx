@@ -72,6 +72,31 @@ const DeleteConfirm = (show, handleModalClose, toDelete, handleDelete, type) => 
         </Modal>
       </>
     );
+  } else if (type === "booking") {
+    return (
+      <>
+        <Modal show={show} onHide={handleModalClose} backdrop="static" keyboard={false} className="modal">
+          <div className="content">
+            <div className="Container">
+              <Modal.Header className="header">
+                <Modal.Title id="title">Confirm Cancellation</Modal.Title>
+              </Modal.Header>
+
+              <Modal.Body id="body">Cancel booking: {toDelete.Booking_Number}</Modal.Body>
+
+              <Modal.Footer className="footer">
+                <Button id="btn" variant="secondary" onClick={handleModalClose}>
+                  No
+                </Button>
+                <Button id="btn2" variant="primary" onClick={() => handleDelete()}>
+                  Yes
+                </Button>
+              </Modal.Footer>
+            </div>
+          </div>
+        </Modal>
+      </>
+    );
   }
 };
 

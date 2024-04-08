@@ -17,5 +17,6 @@ const router = new Router();
 router.get("/", (req, res) => controller.get(req, res));
 router.get("/:id", (req, res) => controller.get(req, res));
 router.post("/", FormValidator.validateAddBookingForm(), (req, res) => controller.post(req, res));
+router.delete("/:id", (req, res) => controller.delete(req, res));
 
 export default router;

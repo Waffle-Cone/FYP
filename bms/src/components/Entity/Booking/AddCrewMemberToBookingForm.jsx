@@ -71,9 +71,14 @@ function AddCrewMemberToBookingForm() {
 
   const getEmployeeReservationNumber = () => {
     const selectedBoatReservationID = newMember.BoatReservation_ID;
-    console.log(selectedBoatReservationID);
-    const employeeReservationNumber = crew.find((member) => member.BoatReservation_ID === selectedBoatReservationID).EmployeeReservation_ID;
-    console.log(employeeReservationNumber);
+    console.log("get boat reservation num: " + selectedBoatReservationID);
+    let employeeReservationNumber = crew.find((member) => member.BoatReservation_ID === selectedBoatReservationID);
+    if (employeeReservationNumber === undefined || employeeReservationNumber == null) {
+      employeeReservationNumber = Math.floor(Math.random() * 10000) + 1;
+    } else {
+      employeeReservationNumber = employeeReservationNumber.EmployeeReservation_ID;
+    }
+    console.log("get employee res num: " + employeeReservationNumber);
     return employeeReservationNumber;
   };
 
@@ -82,6 +87,7 @@ function AddCrewMemberToBookingForm() {
   };
 
   const handleSubmit = async () => {
+    console.log("is crew present: " + crewPresent);
     if (newMember.Employee_ID === 0 || newMember.BoatReservation_ID === 0) {
       if (newMember.Employee_ID === 0) {
         errors["Employee_ID"] = FormInputErrorMessages.addCrewMember["Employee_ID"];
