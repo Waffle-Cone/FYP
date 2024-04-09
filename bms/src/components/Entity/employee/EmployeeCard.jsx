@@ -12,7 +12,8 @@ function EmployeeCard({ employee, openModal, editMode }) {
     navigate("/editEmployee", { state: { initialEmployee: employee } });
   };
   const handleSelect = () => {
-    navigate("/profile", { state: { selectedEmployee: employee } });
+    //navigate("/profile", { state: { selectedEmployee: employee } });
+    alert("Profile View not available yet");
   };
 
   // View ----------------------------------------------------------------
