@@ -19,12 +19,12 @@ model.buildReadQuery = (req) => {
     "boats.Synthetic_Key,boats.Registration, boats.Boat_Img, models.Model_Name, manufacturers.Manufacturer_Name, models.Img_URL,models.Model_Description, models.Weight_Limit_lbs,models.Seating,models.Fuel_Capacity_Gal, watercrafttypes.Type, boatstatus.Status, models.Model_ID, boatstatus.Status_ID",
   ];
 
-  let sql = `SELECT ${extendedField} FROM ${extendedTable} ORDER BY models.Model_Name;`;
+  let sql = `SELECT ${extendedField} FROM ${extendedTable}`;
 
   // when status is set we use where clause
   if (status !== undefined) {
     sql += `WHERE boats.Status = ${status}`;
-    console.log("id unlocked");
+    console.log("status unlocked");
   }
 
   // when id is set we use where clause
@@ -40,13 +40,12 @@ model.buildReadQuery = (req) => {
     AND boats.Registration NOT IN 
     (SELECT boatreservation.Registration
     FROM bookings LEFT JOIN boatreservation ON bookings.Booking_Number = boatreservation.Booking_Number
-    WHERE bookings.BookingDate BETWEEN '${date} 00:00:00' AND '${date} 23:59:59')
-    ORDER BY models.Model_Name;`;
+    WHERE bookings.BookingDate BETWEEN '${date} 00:00:00' AND '${date} 23:59:59')`;
 
     console.log(`getting al boats availble on ${date}`);
   }
 
-  return sql;
+  return sql + ` ORDER BY models.Model_Name`;
 };
 
 export default model;
