@@ -10,6 +10,8 @@ function Header(props) {
   useEffect(() => {
     if (user !== null) {
       setUsername(user.name);
+    } else {
+      setUsername(null);
     }
   }, [user]);
 
