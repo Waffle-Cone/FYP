@@ -17,8 +17,17 @@ div.cardContainer {
     border-radius: 5px;
     box-shadow: 4px 4px 8px lightseagreen;
 
-    img {
+    img.boat {
       width: 100%;
+      height: 100px;
+      display: block;
+      border-radius: 0px 0px 3px 3px;
+    }
+
+    img.employee {
+      width: 250px;
+      height: 250px;
+
       display: block;
       border-radius: 0px 0px 3px 3px;
     }

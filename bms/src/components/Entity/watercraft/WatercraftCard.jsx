@@ -21,9 +21,9 @@ function WatercraftCard({ watercraft, openModal, editMode }) {
     <div className="watercraftCard">
       <Card selected={watercraft} openModal={openModal} editMode={editMode} handleEdit={handleEdit} handleSelect={handleSelect}>
         {!watercraft.Boat_Img ? ( // If a custom boat image is specified use it. I f not use the default model one
-          <img src={watercraft.Img_URL} />
+          <img className="boat" src={watercraft.Img_URL} />
         ) : (
-          <img src={watercraft.Boat_Img} />
+          <img className="boat" src={watercraft.Boat_Img} />
         )}
         <p>{watercraft.Registration}</p>
         <p>{watercraft.Model_Name}</p>

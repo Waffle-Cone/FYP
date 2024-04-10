@@ -145,7 +145,7 @@ function EmployeeForm({ onSuccess }) {
             text="Image URL"
             type="text"
             FieldName="Employee_Img"
-            value={Conformance.employee.js2html["Employee_Img"](employee.Employee_Img)}
+            conformance={Conformance.employee.js2html["Employee_Img"](employee.Employee_Img)}
             onChange={handleChange}
             errors={errors.Employee_Img}
           />

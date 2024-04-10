@@ -67,7 +67,7 @@ function WatercraftForm({ onSuccess }) {
       }
     }
   };
-
+  console.log(watercraft);
   //View -----------------------------------------
   return (
     <>
@@ -116,7 +116,7 @@ function WatercraftForm({ onSuccess }) {
             text="Image URL"
             type="text"
             FieldName="Boat_Img"
-            value={Conformance.watercraft.js2html["Boat_Img"](watercraft.Boat_Img)}
+            conformance={Conformance.watercraft.js2html["Boat_Img"](watercraft.Boat_Img)}
             onChange={handleChange}
             errors={errors.Boat_Img}
           />

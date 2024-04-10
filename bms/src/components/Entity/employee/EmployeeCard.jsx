@@ -20,7 +20,7 @@ function EmployeeCard({ employee, openModal, editMode }) {
   return (
     <div className="employee">
       <Card selected={employee} openModal={openModal} editMode={editMode} handleEdit={handleEdit} handleSelect={handleSelect}>
-        <img src={employee.Employee_Img} />
+        <img className="employee" src={employee.Employee_Img} />
         <p>{employee.Employee_ID}</p>
         <p>{employee.Employee_Name}</p>
         <p>{employee.Job_Name}</p>
