@@ -16,6 +16,8 @@ model.buildReadQuery = (req) => {
   if (id !== undefined) {
     sql += ` WHERE bookings.Booking_Number = ${id}`;
     console.log("id unlocked");
+  } else {
+    sql += ` ORDER BY bookings.BookingDate`;
   }
 
   return sql;
